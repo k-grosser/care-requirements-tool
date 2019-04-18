@@ -125,9 +125,13 @@ declare %restxq:path("relist/delete/{$pkg-id}/{$pkg-version}/{$ref-id}/{$req-id}
  : @param $template-type Variante der MASTER-Schablone (Funktional, Prozess, Umgebung, Eigenschaft)
  : @param $condition-type Typ der Bedingung 
  : @param $condition-comparisonItem Vergleichsobjekt-Baustein der Bedingung
+ : @param $condition-comparisonOperator Vergleichsoperator der Bedingung
  : @param $condition-value Wert-Baustein der Bedingung 
  : @param $condition-event Subjekt der Bedingung (Ereignis)
  : @param $condition-actor Akteur der Bedingung
+ : @param $event-object Objekt der Bedingung
+ : @param $event-function Funktion referenziert in der Bedingung
+ : @param $event-verb Prozesswort der Bedingung
  : @param $system System-Baustein der anforderung
  : @param $liability Priorität-Baustein der Anforderung
  : @param $actor Akteur-Baustein der Anforderung
@@ -146,10 +150,14 @@ declare %restxq:path("restancil/save/{$pkg-id}/{$pkg-version-id}/{$ref-id}")
         %restxq:query-param("template-type","{$template-type}","")   
         %restxq:query-param("type","{$condition-type}","")
         %restxq:query-param("comparisonItem","{$condition-comparisonItem}","")
+        %restxq:query-param("comparisonOperator","{$condition-comparisonOperator}","")
         %restxq:query-param("value","{$condition-value}","")
         %restxq:query-param("event","{$condition-event}","")
         %restxq:query-param("event-actor","{$event-actor}","")
         %restxq:query-param("event-object","{$event-object}","")
+        %restxq:query-param("event-function","{$event-function}","")
+        %restxq:query-param("event-verb","{$event-verb}","")
+        %restxq:query-param("logicexpression","{$logicexpression}","")
         %restxq:query-param("system","{$system}","System")
         %restxq:query-param("liability","{$liability}","muss")
         %restxq:query-param("actor","{$actor}","")
@@ -160,11 +168,11 @@ declare %restxq:path("restancil/save/{$pkg-id}/{$pkg-version-id}/{$ref-id}")
         %restxq:query-param("processverb-detail","{$processverb-detail}","")
         %restxq:query-param("processverb","{$processverb}","")
         %restxq:query-param("category","{$category}","")
-        updating function page:save-requirement($pkg-id, $pkg-version-id, $ref-id, $req-id, $template-type, $condition-type, $condition-comparisonItem, $condition-value, $condition-event, $event-actor, $event-object, $system, $liability, $actor, $functionality, $object-detail1, $object, $object-detail2, $processverb-detail, $processverb, $category) {
+        updating function page:save-requirement($pkg-id, $pkg-version-id, $ref-id, $req-id, $template-type, $condition-type, $condition-comparisonItem, $condition-comparisonOperator, $condition-value, $condition-event, $event-actor, $event-object, $event-function, $event-verb, $logicexpression, $system, $liability, $actor, $functionality, $object-detail1, $object, $object-detail2, $processverb-detail, $processverb, $category) {
           let $condition := switch($condition-type)
                              case "event" return re:new-condition-event($condition-event, $event-actor, $event-object)
-                             case "logic" return re:new-condition-logic($condition-comparisonItem,$condition-value)
-                             case "timespan" return re:new-condition-timespan()
+                             case "logic" return re:new-condition-logic($condition-comparisonItem, $condition-comparisonOperator, $condition-value, $logicexpression)
+                             case "timespan" return re:new-condition-timespan($logicexpression)
                              default return ()
            return
            re:save($pkg-id,$pkg-version-id,$ref-id,$req-id,$template-type,$condition,$system,$liability,$actor,$functionality,$object-detail1,$object,$object-detail2,$processverb-detail,$processverb,$category)

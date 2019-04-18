@@ -42,7 +42,7 @@ declare function ui:page($content) {
   
       <!-- link rel="shortcut icon" href="img/favicon.ico"/-->
   
-      <!-- jQuery (necessary for Flat UIs JavaScript plugins) -->
+      <!-- jQuery (necessary for Flat UIs and other JavaScript plugins) -->
       <script src="{$ui:prefix}/static/flat-ui/js/vendor/jquery.min.js"></script>
       
       <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -59,12 +59,13 @@ declare function ui:page($content) {
       <script src="{$ui:prefix}/static/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
       
       <!-- Loading jQuery i18next Framework for localization -->
+      <script src="{$ui:prefix}/static/jquery-i18next/i18next.min.js"></script>
       <script src="{$ui:prefix}/static/jquery-i18next/jquery-i18next.min.js"></script>
       
       <!-- Loading CARE CUSTOM JS -->
       <script src="{$ui:prefix}/static/care/js/requirements.js"></script>
       <script src="{$ui:prefix}/static/care/js/inspections.js"></script>
-      <script src="{$ui:prefix}/static/care/js/localization.js"></script>
+      
       
       <!-- Loading BPMN.IO -->
       <script src="{$ui:prefix}/static/bpmn-js-seed-master/bower_components/bpmn-js/dist/bpmn-viewer.js"></script>
@@ -80,6 +81,7 @@ declare function ui:page($content) {
       {ui:navbar()}
       <div id="main-content">{$content}</div>
 
+    <script src="{$ui:prefix}/static/care/js/localization.js"></script>
     </body>
   </html>
 };
@@ -101,9 +103,12 @@ declare function ui:navbar() {
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse-01">
               <ul class="nav navbar-nav navbar-left">
-                <li><a href="{$ui:prefix}/requirements-manager"><i class="glyphicon glyphicon-briefcase"/> Prozess-Manager</a></li>
-                <li class="pull-right"><a href="{$ui:prefix}/requirements-manager/list"><i class="glyphicon glyphicon-list"/> Anforderungsliste</a></li>
-                <li class="pull-right"><a href="{$ui:prefix}/glossary"><i class="glyphicon glyphicon-book"/> Glossar</a></li>
+                <li><a id="processnav" href="{$ui:prefix}/requirements-manager" data-i18n="[html]navi.processmanager"></a></li><!--  -->
+
+                <li class="pull-right"><a href="{$ui:prefix}/requirements-manager/list"  data-i18n="[html]navi.reqlist"></a></li><!--  -->
+
+                <li class="pull-right"><a href="{$ui:prefix}/glossary" data-i18n="[html]navi.glossary"></a></li><!--  -->
+
                </ul>
                
                <ul class="pull-right">

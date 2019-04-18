@@ -1,0 +1,11 @@
+start BaseX Server from basex location (FE: works for some reason better in this context than directly from bin?)
+bin\basexhttp
+
+start BaseX GUI IDE
+bin\basexgui
+
+start Webapp with given Portnumber
+http://localhost:PORT/care-webapp
+
+should be 8984:
+http://localhost:8984/care-webapp

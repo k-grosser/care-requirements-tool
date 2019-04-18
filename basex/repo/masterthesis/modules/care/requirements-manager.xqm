@@ -12,16 +12,24 @@ declare namespace c ="care";
 (:~
  : Diese Funktion generiert das XML Element einer Bedingung nach dem LogikMaster
  : @param $comparison-item Vergleichobjekt-Baustein der Bedingung
+ : @param $condition-comparisonOperator Vergleichsoperator der Bedingung
  : @param $value Wert-Baustein der Bedingung
+ : @param $logicexpression Logischer Ausdruck - Alternativ zur Prozessbeschreibung
  : @return XML der Bedingung
 :)
-declare function re:new-condition-logic($comparison-item, $value) {
+declare function re:new-condition-logic($comparison-item, $condition-comparisonOperator, $value, $logicexpression) {
+  if ($logicexpression = '') then
   <Condition Type="logic">
     <Conjunction>Falls</Conjunction>
     <ComparisonItem>{$comparison-item}</ComparisonItem>
-    <ComparisonOperator>gleich</ComparisonOperator>
+    <ComparisonOperator>{$condition-comparisonOperator}</ComparisonOperator>
     <Value>{$value}</Value>
     <Verb>ist</Verb>
+  </Condition> 
+ else
+ <Condition Type="logic">
+    <Conjunction>Falls</Conjunction>
+    <Expression>{$logicexpression}</Expression>
   </Condition>
 };
 
@@ -33,19 +41,28 @@ declare function re:new-condition-logic($comparison-item, $value) {
  : @return XML der Bedingung
 :)
 declare function re:new-condition-event($event, $event-actor, $event-object) {
+  if ($event = '') then
   <Condition Type="event">
     <Conjunction>Sobald</Conjunction>
     <SubjectDescription>das Ereignis</SubjectDescription>
     <Subject>{$event}</Subject>
     <Verb>eintritt</Verb>
   </Condition>
+  else
+  <Condition Type="event">
+    <Conjunction>Sobald</Conjunction>
+    <Subject>{$event-actor}</Subject>
+    <Verb>eintritt</Verb>
+    <Object>{$event-object}</Object>
+  </Condition>
 };
 
 (:~
  : Diese Funktion generiert das XML Element einer Bedingung nach dem ZeitraumMaster
+ : @param $logicexpression Logische Aussage (Schleifenbedingung)
  : @return XML der Bedingung
 :)
-declare function re:new-condition-timespan() {
+declare function re:new-condition-timespan($logicexpression) {
   <Condition Type="timespan">
     <Conjunction>Solange</Conjunction>
   </Condition>

@@ -1,0 +1,10 @@
+xsd for requirement structure?
+
+extend req structure for template variants
+
+function to compute all suggested reqs
+--> parameter of req (preliminary)
+
+Name of tool
+
+editor gui to support template variants

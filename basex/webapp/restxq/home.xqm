@@ -39,6 +39,10 @@ declare
           <div class="login">
             <div class="login-screen" style="width:81.3%;font-size:1.5em">
               Welcome to CARE ... <!-- BeeP&#0178;R -->
+              &#160;
+              <a id="lang-de-big" class="activeLng" onclick="setLngDE()"><span id="lng-label-de-big" class="label label-default"><span class="flag-icon flag-icon-de"></span></span></a>
+              &#160;
+              <a id="lang-en-big" onclick="setLngEN()"><span id="lng-label-en-big"><span class="flag-icon flag-icon-gb"></span></span></a>
                <div style="font-size:13pt">
                System zur Unterstützung bei der Konsistenzhaltung von Prozessmodellierung und textueller Anforderungsdokumentation.
                
@@ -53,6 +57,7 @@ declare
                 Entwickelt von <a style="color:green" href="https://www.xing.com/profile/Florian_Eckey" target="_blank">Florian&#160;Eckey</a> und 
                 <a style="color:green" href="https://www.uni-koblenz-landau.de/de/koblenz/fb4/ist/rgse/staff/katharina-grosser" target="_blank">Katharina&#160;Großer</a><br/>
                 </div>
+                 
             </div>
           </div>
       </div>)
