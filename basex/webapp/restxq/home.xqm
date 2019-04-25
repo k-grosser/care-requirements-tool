@@ -38,24 +38,27 @@ declare
       <div class="container">
           <div class="login">
             <div class="login-screen" style="width:81.3%;font-size:1.5em">
-              Welcome to CARE ... <!-- BeeP&#0178;R -->
+              <span data-i18n="home.welcome"></span> <span class="brand" data-i18n="brand"></span> ... 
+              
+              <!-- 
               &#160;
-              <a id="lang-de-big" class="activeLng" onclick="setLngDE()"><span id="lng-label-de-big" class="label label-default"><span class="flag-icon flag-icon-de"></span></span></a>
+<a id="lang-de-big" class="activeLng" onclick="setLngDE()"><span id="lng-label-de-big" class="label label-default"><span class="flag-icon flag-icon-de"></span></span></a>
               &#160;
-              <a id="lang-en-big" onclick="setLngEN()"><span id="lng-label-en-big"><span class="flag-icon flag-icon-gb"></span></span></a>
-               <div style="font-size:13pt">
-               System zur Unterstützung bei der Konsistenzhaltung von Prozessmodellierung und textueller Anforderungsdokumentation.
+              <a id="lang-en-big" onclick="setLngEN()"><span id="lng-label-en-big"><span class="flag-icon flag-icon-gb"></span></span></a> 
+               -->
                
-                <a href="{$ui:prefix}/requirements-manager" style="color:green">Los geht&#8216;s&#160;</a>
+               <div style="font-size:13pt">
+               <span data-i18n="home.system"></span>
+               
+                <a href="{$ui:prefix}/requirements-manager" style="color:green" data-i18n="[html]home.go"></a>
                </div>
                <div style="font-size:13pt">
-                <a href="{$ui:prefix}/setup" style="color:green">>> Datenbank löschen &#38; neu laden</a>
+                <a href="{$ui:prefix}/setup" style="color:green" data-i18n="home.loadndelete"></a>
                </div>
                <div style="font-size:13pt">
-                <a href="{$ui:prefix}/inspection" style="color:green">>> Code Dokumentation</a><br/>
+                <a href="{$ui:prefix}/inspection" style="color:green" data-i18n="home.docs"></a><br/>
                 
-                Entwickelt von <a style="color:green" href="https://www.xing.com/profile/Florian_Eckey" target="_blank">Florian&#160;Eckey</a> und 
-                <a style="color:green" href="https://www.uni-koblenz-landau.de/de/koblenz/fb4/ist/rgse/staff/katharina-grosser" target="_blank">Katharina&#160;Großer</a><br/>
+                <span data-i18n="[html]home.authors"></span><br/>
                 </div>
                  
             </div>

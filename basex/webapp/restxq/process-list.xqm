@@ -28,7 +28,7 @@ declare
     ui:page(
       <div class="container-fluid">
         <div class="col-md-12">
-          <h5>Prozess-Manager</h5>        
+          <h5 data-i18n="processlist.processmanager"></h5>        
         </div>
         <div class="col-md-8">
             {if(cm:get()) then 
@@ -37,7 +37,7 @@ declare
                let $packages := cm:get($pkg-id)
                let $latest-package := util:latest-element($packages)
                return page:package($latest-package)
-             else <div class="text-center" style="margin-top:20px;"><b>Keine Prozesse für die Anforderungserhebung geladen</b></div>}
+             else <div class="text-center" style="margin-top:20px;"><b data-i18n="processlist.noprocess"></b></div>}
         </div>
         <div class="col-md-4">
             {page:upload-form()}
@@ -61,11 +61,11 @@ declare function page:package($package as element(c:Package)*) as element(div) {
     <div class="collapse in process-panel" id="collapse{$package/@Id}{$package/@VersionId}">
       <div>
         <dl>
-          <dt>Versionen</dt>
+          <dt data-i18n="processlist.versions"></dt>
           <table class="table noindent" style="margin-bottom:10px">
             {for $pkg in cm:get($package/@Id) order by xs:dateTime($pkg/@Timestamp) descending return page:package-panel($package, $pkg)}
           </table>
-          <div><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/requirements-manager/delete-pkgs/{$package/@Id}" title="Alle Versionen dieses Prozesses und die zugehörigen Anforderungen löschen">Prozess und Anforderungen löschen</a></div>
+          <div><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/requirements-manager/delete-pkgs/{$package/@Id}" data-i18n="[title]processlist.deletealltitle;processlist.deleteall"></a></div>
         </dl>
       </div>
     </div>
@@ -84,21 +84,24 @@ declare function page:package-panel($package, $pkg) {
   let $inconsistencies := for $act in $pkg/c:Activity return 
                             consistencymanager:check-consistency($act, $inconsistencies) return
   <tr style="{if($package/@Timestamp=$pkg/@Timestamp) then 'font-weight:bold' else ()}">
-    <td>{if($inconsistencies) then <i title="Inkonsistenzen gefunden" class="glyphicon glyphicon-warning-sign text-warning" style="cursor:default;"/> else ()}</td>
+    <td>{if($inconsistencies) then <i data-i18n="[title]processlist.inconsistencies" class="glyphicon glyphicon-warning-sign text-warning" style="cursor:default;"/> else ()}</td>
     <td class="col-md-6">
-      <span>{format-dateTime(xs:dateTime($pkg/@Timestamp), "[D]. [MNn] [Y], [H00]:[m00]:[s01]", "de", (), ())}{if($package/@Timestamp=$pkg/@Timestamp) then ' (neuste)' else ()}</span>
+       
+<span class="de-only">{format-dateTime(xs:dateTime($pkg/@Timestamp), "[D]. [MNn] [Y], [H00]:[m00]:[s01]", "de", (), ())}{if($package/@Timestamp=$pkg/@Timestamp) then ' (neuste)' else ()}</span>
+<span class="en-only" style="display:none;">{format-dateTime(xs:dateTime($pkg/@Timestamp), "[MNn] [D1o]  [Y], [H00]:[m00]:[s01]", "en", (), ())}{if($package/@Timestamp=$pkg/@Timestamp) then ' (newest)' else ()}</span>
+      
     </td>
     <td class="col-md-2">
-      <a class="re-link" href="{$ui:prefix}/requirements-manager/package/{$pkg/@Id}/{$pkg/@VersionId}" title="Hier gelangen Sie zur der Liste der Aktivitäten dieses Prozesses">Anforderungserhebung</a>
+      <a class="re-link" href="{$ui:prefix}/requirements-manager/package/{$pkg/@Id}/{$pkg/@VersionId}" data-i18n="[title]processlist.elicitationtitle;processlist.elicitation"></a>
     </td>
     <td class="col-md-2">
-      <a class="re-link" href="{$ui:prefix}/requirements-manager/list/{$package/@Id}/{$pkg/@VersionId}" title="Hier gelangen Sie zur der Liste aller Anforderungen dieses Prozesses">Anforderungsliste</a>
+      <a class="re-link" href="{$ui:prefix}/requirements-manager/list/{$package/@Id}/{$pkg/@VersionId}" data-i18n="[title]processlist.reqlisttitle;processlist.reqlist"></a>
     </td>
     <td class="col-md-3">
-      <a class="re-link" href="{$ui:prefix}/requirements-manager/download-requirements/{$package/@Id}/{$pkg/@VersionId}" title="Hier gelangen Sie zur der Liste aller Anforderungen dieses Prozesses">Anforderungen herunterladen</a>
+      <a class="re-link" href="{$ui:prefix}/requirements-manager/download-requirements/{$package/@Id}/{$pkg/@VersionId}" data-i18n="[title]processlist.downloadtitle;processlist.download"></a>
     </td>
     <td class="col-md-1">
-      <a class="re-link" href="{$ui:prefix}/requirements-manager/delete-pkg/{$package/@Id}/{$pkg/@VersionId}" title="Version löschen"><span class="fui-cross"></span></a>
+      <a class="re-link" href="{$ui:prefix}/requirements-manager/delete-pkg/{$package/@Id}/{$pkg/@VersionId}" data-i18n="[title]processlist.deleteversiontitle"><span class="fui-cross"></span></a>
     </td>
  </tr>
 };
@@ -111,20 +114,20 @@ declare function page:upload-form() {
   <div class="collapse-panel actions-panel-header">
     <div class="header" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample" style="cursor:default">
       <dl class="palette">
-        <dt>BPMN hochladen</dt>
+        <dt data-i18n="processlist.upload"></dt>
       </dl>
     </div>
     <div class="collapse in" id="collapseActions">
       <div class="panel-box upload-panel">
-      <div style="margin-bottom:10px;">
-        Hier können Sie BPMN Prozessmodelle hochladen, zu denen Sie Anforderungen erheben wollen:
-      </div>
+      <div style="margin-bottom:10px;" data-i18n="processlist.uploadinfo"></div>
         <form action="{$ui:prefix}/data/upload" method="POST" enctype="multipart/form-data">
           <div align="center">
             <input type="file" name="files" multiple="multiple"/>
-            <input class="btn btn-sm upload-btn" value="hochladen" type="submit"/>
+            <div data-i18n="processlist.uploadlng" style="font-size:0.8em;"></div>
+            <input class="btn btn-sm upload-btn" data-i18n="[value]processlist.uploadbtn" type="submit"/>
           </div>
          </form>
+         
        </div>
     </div>
   </div>

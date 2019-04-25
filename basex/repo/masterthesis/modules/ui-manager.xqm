@@ -62,6 +62,9 @@ declare function ui:page($content) {
       <script src="{$ui:prefix}/static/jquery-i18next/i18next.min.js"></script>
       <script src="{$ui:prefix}/static/jquery-i18next/jquery-i18next.min.js"></script>
       
+      <!-- Loading moment.js Framework for date-time handling with localization -->
+      <script src="{$ui:prefix}/static/momentjs/moment-with-locales.min.js"></script>
+      
       <!-- Loading CARE CUSTOM JS -->
       <script src="{$ui:prefix}/static/care/js/requirements.js"></script>
       <script src="{$ui:prefix}/static/care/js/inspections.js"></script>
@@ -99,7 +102,7 @@ declare function ui:navbar() {
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
                 <span class="sr-only">Toggle navigation</span>
               </button>
-              <a class="navbar-brand" href="{$ui:prefix}/care">CARE</a>
+              <a class="navbar-brand brand" href="{$ui:prefix}/care" data-i18n="brand"></a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse-01">
               <ul class="nav navbar-nav navbar-left">
@@ -112,8 +115,10 @@ declare function ui:navbar() {
                </ul>
                
                <ul class="pull-right">
-                 <li class="pull-right lng-btn"><a id="lang-en" onclick="setLngEN()"><span id="lng-label-en"><span class="flag-icon flag-icon-gb"></span></span></a></li>
-                 <li class="pull-right lng-btn"><a id="lang-de" class="activeLng" onclick="setLngDE()"><span id="lng-label-de" class="label label-success"><span class="flag-icon flag-icon-de"></span></span></a></li>
+                 <li class="pull-right lng-btn"><a id="lang-en" class="care-link" onclick="setLngEN()">EN</a></li> <!-- <span id="lng-label-en"><span class="flag-icon flag-icon-gb"></span></span> -->
+
+                 <li class="pull-right lng-btn"><a id="lang-de" class="activeLng" onclick="setLngDE()">DE</a></li> <!-- <span id="lng-label-de" class="label label-success"><span class="flag-icon flag-icon-de"></span></span> -->
+
                </ul>
                
             </div>
