@@ -1,6 +1,6 @@
 (:~
  : Diese Modul generiert die Start-Seite der Webanwendung.
- : @version 1.1
+ : @version 1.2
  : @author Florian Eckey, Katharina Großer
  :)
 module namespace page = 'masterthesis/modules/web-page';

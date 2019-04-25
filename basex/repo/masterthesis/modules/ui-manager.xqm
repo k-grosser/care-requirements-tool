@@ -1,6 +1,6 @@
 (:~
  : Dieses Modul stellt Templates für die HTML Seiten bereit.
- : @version 1.1
+ : @version 1.2
  : @author Florian Eckey, Katharina Großer
  :)
 module namespace ui = 'masterthesis/modules/ui-manager';

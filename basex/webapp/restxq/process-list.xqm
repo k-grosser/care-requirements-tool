@@ -1,7 +1,7 @@
 (:~
  : Diese Modul generiert die Ansicht für den Prozess-Manager.
- : @version 1.0
- : @author Florian Eckey
+ : @version 1.1
+ : @author Florian Eckey, Katharina Großer
  :)
 module namespace page = 'masterthesis/modules/web-page/requirements-manager';
 
