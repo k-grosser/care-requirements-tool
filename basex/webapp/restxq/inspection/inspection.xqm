@@ -1,7 +1,7 @@
 (:~
  : Dieses Modul enthält die Funktionen, welche die Ansicht der Dokumentation eines XQuery-Moduls erzeugt. 
- : @author Florian Eckey
- : @version 1.0
+ : @author Florian Eckey, Katharina Großer
+ : @version 1.1
  :)
 module namespace page = 'masterthesis/modules/inspection/inspection';
 
@@ -22,7 +22,7 @@ declare %restxq:path("inspection")
   function page:import() {
     ui:page((
       <div class="col-md-8">{page:module-list()}</div>
-      ,<div class="col-md-4"><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/inspection/modules/generate" title="GraphML der Modulstruktur generieren">Modulstruktur generieren</a></div>))
+      ,<div class="col-md-4"><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/inspection/modules/generate" data-i18n="[title]docu.graphtitle;docu.graph"></a></div>))
 };
 
 (:~
@@ -37,11 +37,11 @@ declare %restxq:path("module-list")
               <table class="table table-hover noindent">
               <thead>
                  <tr style="cursor:default">
-                   <th class="vertical-middle" style="width:20%">Modul</th>
-                   <th class="vertical-middle" style="width:20%">URI</th>
-                   <th class="vertical-middle" style="width:20%">Funktionen</th>
-                   <th class="vertical-middle" style="width:20%">Path</th>
-                   <th class="vertical-middle" style="width:20%">Dokumentation</th>
+                   <th class="vertical-middle" style="width:20%" data-i18n="docu.modul"></th>
+                   <th class="vertical-middle" style="width:20%" data-i18n="docu.uri"></th>
+                   <th class="vertical-middle" style="width:20%" data-i18n="docu.func"></th>
+                   <th class="vertical-middle" style="width:20%" data-i18n="docu.path"></th>
+                   <th class="vertical-middle" style="width:20%" data-i18n="docu.doc"></th>
                  </tr>
                </thead>
                <tbody>
