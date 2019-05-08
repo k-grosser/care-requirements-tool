@@ -18,14 +18,14 @@ declare namespace c="care";
  : @return Prozess-Manager (XHTML)
  :)
 declare
-  %rest:path("requirements-manager")
+  %rest:path("requirements-manager/{$lng}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
   %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
-  function page:start()
+  function page:start($lng)
   as element(Q{http://www.w3.org/1999/xhtml}html) {
-    ui:page(
+    ui:page($lng,
       <div class="container-fluid">
         <div class="col-md-12">
           <h5 data-i18n="processlist.processmanager"></h5>        
@@ -36,11 +36,11 @@ declare
                for $pkg-id in $pkg-ids
                let $packages := cm:get($pkg-id)
                let $latest-package := util:latest-element($packages)
-               return page:package($latest-package)
+               return page:package($lng, $latest-package)
              else <div class="text-center" style="margin-top:20px;"><b data-i18n="processlist.noprocess"></b></div>}
         </div>
         <div class="col-md-4">
-            {page:upload-form()}
+            {page:upload-form($lng)}
         </div>
       </div>
     )
@@ -51,7 +51,7 @@ declare
  : @param $package CARE Paket / Prozess
  : @return Panel des Paketes (XHTML)
  :)
-declare function page:package($package as element(c:Package)*) as element(div) {
+declare function page:package($lng, $package as element(c:Package)*) as element(div) {
    <div class="collapse-panel processw-collapse-panel">
     <div class="header" data-toggle="collapse" href="#collapse{$package/@Id}{$package/@VersionId}" aria-expanded="false" aria-controls="collapseExample">
       <dl class="palette">
@@ -63,9 +63,9 @@ declare function page:package($package as element(c:Package)*) as element(div) {
         <dl>
           <dt data-i18n="processlist.versions"></dt>
           <table class="table noindent" style="margin-bottom:10px">
-            {for $pkg in cm:get($package/@Id) order by xs:dateTime($pkg/@Timestamp) descending return page:package-panel($package, $pkg)}
+            {for $pkg in cm:get($package/@Id) order by xs:dateTime($pkg/@Timestamp) descending return page:package-panel($package, $pkg, $lng)}
           </table>
-          <div><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/requirements-manager/delete-pkgs/{$package/@Id}" data-i18n="[title]processlist.deletealltitle;processlist.deleteall"></a></div>
+          <div><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/requirements-manager/delete-pkgs/{$package/@Id}/{$lng}" data-i18n="[title]processlist.deletealltitle;processlist.deleteall"></a></div>
         </dl>
       </div>
     </div>
@@ -78,7 +78,7 @@ declare function page:package($package as element(c:Package)*) as element(div) {
  : @param $pkg Betrachtetes Paket
  : @return Tabellen-Zeile des Prozesses (XHTML)
  :)
-declare function page:package-panel($package, $pkg) {
+declare function page:package-panel($package, $pkg, $lng) {
   let $compare-package := cm:package-before($pkg)
   let $inconsistencies := if($compare-package) then diff:Activities($pkg,$compare-package) else () 
   let $inconsistencies := for $act in $pkg/c:Activity return 
@@ -92,16 +92,16 @@ declare function page:package-panel($package, $pkg) {
       
     </td>
     <td class="col-md-2">
-      <a class="re-link" href="{$ui:prefix}/requirements-manager/package/{$pkg/@Id}/{$pkg/@VersionId}" data-i18n="[title]processlist.elicitationtitle;processlist.elicitation"></a>
+      <a class="re-link" href="{$ui:prefix}/requirements-manager/package/{$pkg/@Id}/{$pkg/@VersionId}/{$lng}" data-i18n="[title]processlist.elicitationtitle;processlist.elicitation"></a>
     </td>
     <td class="col-md-2">
-      <a class="re-link" href="{$ui:prefix}/requirements-manager/list/{$package/@Id}/{$pkg/@VersionId}" data-i18n="[title]processlist.reqlisttitle;processlist.reqlist"></a>
+      <a class="re-link" href="{$ui:prefix}/requirements-manager/list/{$package/@Id}/{$pkg/@VersionId}/{$lng}" data-i18n="[title]processlist.reqlisttitle;processlist.reqlist"></a>
     </td>
     <td class="col-md-3">
       <a class="re-link" href="{$ui:prefix}/requirements-manager/download-requirements/{$package/@Id}/{$pkg/@VersionId}" data-i18n="[title]processlist.downloadtitle;processlist.download"></a>
     </td>
     <td class="col-md-1">
-      <a class="re-link" href="{$ui:prefix}/requirements-manager/delete-pkg/{$package/@Id}/{$pkg/@VersionId}" data-i18n="[title]processlist.deleteversiontitle"><span class="fui-cross"></span></a>
+      <a class="re-link" href="{$ui:prefix}/requirements-manager/delete-pkg/{$package/@Id}/{$pkg/@VersionId}/{$lng}" data-i18n="[title]processlist.deleteversiontitle"><span class="fui-cross"></span></a>
     </td>
  </tr>
 };
@@ -110,7 +110,7 @@ declare function page:package-panel($package, $pkg) {
  : Diese Funktion generiert das Panel zum Hochladen von Prozessen.
  : @return Upload-Panel (XHTML)
  :)
-declare function page:upload-form() {
+declare function page:upload-form($lng) {
   <div class="collapse-panel actions-panel-header">
     <div class="header" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample" style="cursor:default">
       <dl class="palette">
@@ -120,7 +120,7 @@ declare function page:upload-form() {
     <div class="collapse in" id="collapseActions">
       <div class="panel-box upload-panel">
       <div style="margin-bottom:10px;" data-i18n="processlist.uploadinfo"></div>
-        <form action="{$ui:prefix}/data/upload" method="POST" enctype="multipart/form-data">
+        <form action="{$ui:prefix}/data/upload/{$lng}" method="POST" enctype="multipart/form-data">
           <div align="center">
             <input type="file" name="files" multiple="multiple"/>
             <div data-i18n="processlist.uploadlng" style="font-size:0.8em;"></div>
@@ -138,10 +138,10 @@ declare function page:upload-form() {
  : @param $pkg-id Die ID des Paketes, welches gelöscht werden soll
  : @return Redirekt auf den Prozess-Manager
  :)
-declare %restxq:path("requirements-manager/delete-pkgs/{$pkg-id}")
-        updating function page:delete-pkgs($pkg-id) {
+declare %restxq:path("requirements-manager/delete-pkgs/{$pkg-id}/{$lng}")
+        updating function page:delete-pkgs($pkg-id, $lng) {
             cm:delete-package($pkg-id)
-            ,db:output(<restxq:redirect>/requirements-manager</restxq:redirect>)
+            ,db:output(<restxq:redirect>/requirements-manager/{$lng}</restxq:redirect>)
 };
 
 (:~
@@ -150,14 +150,14 @@ declare %restxq:path("requirements-manager/delete-pkgs/{$pkg-id}")
  : @param $pkg-version Versions-ID des Prozesses, welcher gelöscht wird
  : @return Redirekt auf den Prozess-Manager
  :)
-declare %restxq:path("requirements-manager/delete-pkg/{$pkg-id}/{$pkg-version}")
-        updating function page:delete-pkgs($pkg-id, $pkg-version) {
+declare %restxq:path("requirements-manager/delete-pkg/{$pkg-id}/{$pkg-version}/{$lng}")
+        updating function page:delete-pkgs($pkg-id, $pkg-version, $lng) {
             cm:delete-package($pkg-id,$pkg-version)
-            ,db:output(<restxq:redirect>/requirements-manager</restxq:redirect>)
+            ,db:output(<restxq:redirect>/requirements-manager/{$lng}</restxq:redirect>)
 };
 
 (:~
- : Diese Funktion stellt den REST-Aufruf für das Löschen der Version eines Prozesses in der Datenbank dar. Sie ruft eine Funktion im REPO auf, welche das Löschen übernimmt.
+ : Diese Funktion stellt den REST-Aufruf für das Downloaden der Requirements eines Prozesses bereit.
  : @param $pkg-id Die ID des Paketes, welches gelöscht werden soll
  : @param $pkg-version Versions-ID des Prozesses, welcher gelöscht wird
  : @return Redirekt auf den Prozess-Manager
@@ -185,9 +185,9 @@ declare %restxq:path("requirements-manager/download-requirements/{$pkg-id}/{$pkg
  :)
 declare
   %rest:POST
-  %rest:path("/data/upload")
+  %rest:path("/data/upload/{$lng}")
   %rest:form-param("files", "{$files}")
-  updating function page:upload($files) {
+  updating function page:upload($files, $lng) {
     for $name in map:keys($files)
     let $content := $files($name)
     let $ext := substring-after($name,".") return 
@@ -195,5 +195,5 @@ declare
       case "bpm" return cm:import-bizagi($content)   
       case "xpdl" return cm:import-xpdl($content)
       default return ()
-    ,db:output(<restxq:redirect>/requirements-manager</restxq:redirect>)
+    ,db:output(<restxq:redirect>/requirements-manager/{$lng}</restxq:redirect>)
 };

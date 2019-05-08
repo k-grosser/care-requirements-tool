@@ -167,7 +167,7 @@ declare updating function re:delete-requirement($pkg-id, $pkg-version, $ref-id, 
  : @param $processverb Prozesswort-Baustein
  : @param $category Kategorie der Anforderung
 :)
-declare updating function re:save($pkg-id,$pkg-version,$ref-id,$req-id,$template-type,$condition,$system,$liability,$actor,$functionality,$object-detail1,$object,$object-detail2,$processverb-detail,$processverb,$category) {
+declare updating function re:save($pkg-id,$pkg-version,$ref-id,$req-id,$template-type,$condition,$system,$liability,$actor,$functionality,$object-detail1,$object,$object-detail2,$processverb-detail,$processverb,$category,$lng) {
   let $pkg := cm:get($pkg-id,$pkg-version)
   let $packages-after := cm:packages-after($pkg)
   let $packages := $packages-after | $pkg

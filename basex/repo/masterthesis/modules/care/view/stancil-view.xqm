@@ -19,11 +19,11 @@ declare namespace c="care";
  : @param $req-id Ausgewählte ID der Anforderung, falls diese für die Bearbeitung angewählt wurde
  : @return HTML-Panel für die Eingabe in die Schablone
  :)
-declare function view:stancil-panel($current-package,$compare-package, $ref-id, $req-id) {
+declare function view:stancil-panel($current-package,$compare-package, $ref-id, $req-id, $lng) {
   <div class="collapse-panel re-collapse-panel stancil-panel-header">
     <div class="header" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
       <dl class="palette">
-        <dt>Anforderungs - Schablone{ui:info-tooltip("Hier können Anforderungen mit Hilfer der SOPHIST Satzschablone eingegeben werden. Als default wird der FunktionsMASTER angezeigt. Für den BedingungsMASTER drücken Sie 'Strg + B'. Nochmaliges drücken von 'Strg + B' wecheslt die Arten des BedingungsMASTERs. Für den detaillierten FunktionsMASTER drücken Sie 'Strg + Leer'. <br/> Die Vorschläge für die Satzbausteine leiten sich aus den Kontextinformationen ab.")}</dt>
+        <dt>Anforderungs - Schablone{ui:info-tooltip("elicit.template")}</dt>
       </dl>
     </div>
       <div class="collapse in" id="collapseStancil">

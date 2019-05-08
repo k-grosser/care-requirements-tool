@@ -1,5 +1,5 @@
 (:~
- : Dieses Modul stellt Funktionen für die Generigung des HTML Inhalts für die Ansicht der Liste der Anforderungen einer Aktivität zur Verfügung
+ : Requirements list panel. Lists all requirements that belong to a selected activity
  : @version 1.1
  : @author Florian Eckey
 :)
@@ -11,37 +11,39 @@ import module namespace ui = 'masterthesis/modules/ui-manager';
 declare namespace c="care";
 
 (:~
- : Diese Funktion generiert den HTML Inhalt für das Panel, in dem die Liste der Anforderungen der übergebenen Aktivität dargestellt werden.
- : @param $package Das Paket, zu dem die Kontextinformationen angezeigt werden
- : @param $compare-package Das Paket, mit dem die Kontextinformationen verglichen werden
- : @param $ref-id Die ID der Aktivität, zu der die Kontextinformationen angezeigt werden
- : @param $req-id Ausgewählte ID der Anforderung, falls diese für die Bearbeitung angewählt wurde
- : @param $inconsistencies Die Inkonsistenzen, die für die übergebene Aktivität berechnet wurden
- : @return HTML-Seite für die Ansicht der Anforderungen in der Assitenz-Ansicht
+ : Generates requirements list panel. Lists all requirements that belong to a selected activity
+ : @param $package package the requirements belong to
+ : @param $compare-package package inconsistencies of the requirements are calculated towards
+ : @param $ref-id activity ID of the activity the requirements belong to
+ : @param $req-id requirement ID of the (optionally) selected requirement
+ : @param $inconsistencies calculated inconsistencies
+ : @param $lng active GUI language
+ : @return requirements list panel (XHTML)
  :)
-declare function view:list-panel($package, $compare-package, $ref-id, $req-id, $inconsistencies) {
+declare function view:list-panel($package, $compare-package, $ref-id, $req-id, $inconsistencies, $lng) {
   <div class="collapse-panel re-collapse-panel">
     <div class="header" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
       <dl class="palette">
-        <dt>Liste der Anforderungen{ui:info-tooltip("Hier befindet sich die Liste aller Anforderungen, die aus der aktuell betrachteten Aktivität abgeleitet wurden. Treten Änderungen zur Vorversion auf, hovern Sie bitte über die orange-farbigen Texte, um die konkrete Änderung zu erfahren.")}</dt>
+        <dt><span data-i18n="processlist.reqlist"></span>{ui:info-tooltip("elicit.reqlisttt")}</dt>
       </dl>
     </div>
     <div class="collapse in" id="collapseList">
-      {view:view-elements($package, $compare-package, $ref-id, $req-id, $inconsistencies)}
+      {view:view-elements($package, $compare-package, $ref-id, $req-id, $inconsistencies, $lng)}
     </div>
   </div>
 };
 
 (:~
- : Diese Funktion erzeugt die Tabelle, in der die Anforderungen mit den Aktionen zum Löschen und Bearbeiten enthalten sind. 
+ : Generates requirements table with action buttons to delete or edit 
  : @param $package Das Paket, zu dem die Kontextinformationen angezeigt werden
  : @param $compare-package Das Paket, mit dem die Kontextinformationen verglichen werden
  : @param $ref-id Die ID der Aktivität, zu der die Kontextinformationen angezeigt werden
  : @param $selected-req-id Ausgewählte ID der Anforderung, falls diese für die Bearbeitung angewählt wurde
  : @param $inconsistencies Die Inkonsistenzen, die für die übergebene Aktivität berechnet wurden
+ : @param $lng active GUI language
  : @return HTML-Seite für die Tabelle der Anforderungen
 :)
-declare function view:view-elements($package, $compare-package, $ref-id, $selected-req-id, $inconsistencies) {
+declare function view:view-elements($package, $compare-package, $ref-id, $selected-req-id, $inconsistencies, $lng) {
   let $current-requirements := $package/c:Activity[@Id=$ref-id]/c:Requirements/c:Requirement
   let $requirements := $current-requirements return
   <div  class="panel-box" style="">

@@ -18,12 +18,12 @@ declare namespace i="inspections";
  : @param $uri-hex Hexadezimal des URI's (namespaces) des Moduls
  : @return Dokumentation des XQuery-Moduls (XHTML) in UI-Template
  :)
-declare %restxq:path("inspection/module/{$uri-hex}")
+declare %restxq:path("inspection/module/{$uri-hex}/{$lng}")
         %restxq:GET
         %output:method("html")
         %output:version("5.0")
-  function page:module($uri-hex) {
-     ui:page(page:content($uri-hex))
+  function page:module($uri-hex,$lng) {
+     ui:page($lng, page:content($uri-hex, $lng))
 };
 
 (:~
@@ -31,8 +31,8 @@ declare %restxq:path("inspection/module/{$uri-hex}")
  : @param $uri-hex Hexadezimal des URI's (namespaces) des Moduls
  : @return Dokumentation des XQuery-Moduls (XHTML)
  :)
-declare %restxq:path("inspection/module/content/{$uri-hex}")
-        function page:content($uri-hex) {
+declare %restxq:path("inspection/module/content/{$uri-hex}/{$lng}")
+        function page:content($uri-hex,$lng) {
           let $modules := inspection:get-modules()
           let $module := $modules/xd:xqdoc[xs:hexBinary(hash:md5(./xd:module/xd:uri/string()))=$uri-hex]
           let $imports := $module/xd:imports/xd:import
@@ -63,7 +63,7 @@ declare %restxq:path("inspection/module/content/{$uri-hex}")
             <h5 data-i18n="docu.imports"></h5>
             {if($imports) then $imports ! 
             <li>
-              <a href="{$ui:prefix}/inspection/module/{xs:hexBinary(hash:md5(./xd:uri/string()))}"><span class="glyphicon glyphicon-import"></span>&#160;{./xd:uri/string()}</a>
+              <a href="{$ui:prefix}/inspection/module/{xs:hexBinary(hash:md5(./xd:uri/string()))}/{$lng}"><span class="glyphicon glyphicon-import"></span>&#160;{./xd:uri/string()}</a>
             </li>
             else 
             <li data-i18n="docu.noimports"></li>}
@@ -73,7 +73,7 @@ declare %restxq:path("inspection/module/content/{$uri-hex}")
             <h5 data-i18n="docu.usage"></h5>
             {if($uses) then $uses ! 
             <li>
-              <a href="{$ui:prefix}/inspection/module/{xs:hexBinary(hash:md5(./xd:module/xd:uri/string()))}"><span class="glyphicon glyphicon-import"></span>&#160;{./xd:module/xd:uri/string()}</a>
+              <a href="{$ui:prefix}/inspection/module/{xs:hexBinary(hash:md5(./xd:module/xd:uri/string()))}/{$lng}"><span class="glyphicon glyphicon-import"></span>&#160;{./xd:module/xd:uri/string()}</a>
             </li>
             else <li data-i18n="docu.nousage"></li>}
           </ul>
@@ -129,7 +129,7 @@ declare %restxq:path("inspection/module/content/{$uri-hex}")
         </div>
         
         else <div data-i18n="docu.nomodul"></div>
-        ,<div class="col-md-12"><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/inspection" data-i18n="docu.back"></a></div>
+        ,<div class="col-md-12"><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/inspection/{$lng}" data-i18n="docu.back"></a></div>
 };
 
 (:~

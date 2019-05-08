@@ -1,7 +1,7 @@
 (:~
  : Diese Modul generiert die Ansicht für das Glossar. 
- : @author Florian Eckey
- : @version 1.0
+ : @author Florian Eckey, Katharina Großer
+ : @version 1.1
  :)
 module namespace page = 'masterthesis/modules/care/glossary-view';
 
@@ -14,12 +14,12 @@ declare namespace g="glossary";
  : Diese Funktion erzeugt den HTML-Inhalt des Glossars Assstenzansicht. Der Inhalt wird in das UI-Template eingebunden.
  : @return Glossar-Ansicht (XHTML)
  :)
-declare %restxq:path("glossary")
+declare %restxq:path("glossary/{$lng}")
         %restxq:GET
         %output:method("html")
         %output:version("5.0")
-  function page:glossary() {
-    ui:page(<div class="container-fluid">
+  function page:glossary($lng) {
+    ui:page($lng, <div class="container-fluid">
               <div class="col-md-12">
                 <h5>Glossar</h5>        
               </div>

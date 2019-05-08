@@ -21,7 +21,7 @@ declare function view:consistency-panel($current-package,$compare-package, $ref-
   <div class="collapse-panel re-collapse-panel consistency-panel {if($inconsistencies) then 'inconsistencies' else 'no-inconsistencies'}">
     <div class="header" data-toggle="collapse"  aria-expanded="false" aria-controls="collapseExample">
       <dl class="palette">
-        <dt>{if($inconsistencies) then 'Inkonsistenzen' else 'Keine Inkonsistenzen'}{ui:info-tooltip("Die Liste der Inkonsistenzen zeigt alle Validierungsfehler und Unterschiede zur Vorgänger-Version an. Diese müssen behoben werden. Ist der Balken grün, sind die Anforderungen und das BPMN Prozessmodell konsistent.")}</dt>
+        <dt>{if($inconsistencies) then 'Inkonsistenzen' else 'Keine Inkonsistenzen'}{ui:info-tooltip("elicit.consistency")}</dt>
       </dl>
       
     </div>

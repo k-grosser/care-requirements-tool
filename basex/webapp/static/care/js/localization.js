@@ -84,6 +84,29 @@ i18next.init({
         type: 'Typ',
         val: 'Wert'
       },
+      activitylist: {
+        activitylist: 'Aktivitätenliste',
+        activity: 'Aktivität',
+        reqs: 'Erhobene Anforderungen',
+        noactivity: 'Keine Aktivitäten gefunden',
+        changes: 'Änderung gefunden',
+        deleted: 'Aktivität entfernt',
+        add: 'Aktivität hinzugefügt'
+      },
+      elicit: {
+        backtolist: 'Zur Aktivitätenliste',
+        reqlisttt: 'Hier befindet sich die Liste aller Anforderungen, die aus der aktuell betrachteten Aktivität abgeleitet wurden. Treten Änderungen zur Vorversion auf, hovern Sie bitte über die orange-farbigen Texte, um die konkrete Änderung zu erfahren.',
+        template: 'Hier können Anforderungen mit Hilfer der SOPHIST MASTER Satzschablone eingegeben werden. Als default wird der FunktionsMASTER angezeigt. Für den BedingungsMASTER drücken Sie Strg + B. Nochmaliges drücken von Strg + B wecheslt die Arten des BedingungsMASTERs. Für den detaillierten FunktionsMASTER drücken Sie Strg + Leer. Die Vorschläge für die Satzbausteine leiten sich aus den Kontextinformationen ab.',
+        consistency: 'Die Liste der Inkonsistenzen zeigt alle Validierungsfehler und Unterschiede zur Vorgänger-Version an. Diese müssen behoben werden. Ist der Balken grün, sind die Anforderungen und das BPMN Prozessmodell konsistent.',
+        info: 'Hier befinden sich alle für die Erhebung von Anforderungen relevanten Kontextinformationen der aktuell betrachteten Aktivität.',
+        context: 'Kontextinformationen der Aktivität',
+        name: 'Name',
+        activitytype: 'Activität-Typ',
+        role: 'Rolle',
+        doc: 'Dokumente',
+        pre: 'Vorgänger',
+        sys: 'Systeme'
+      },
        brand: 'CARE' //BeeP&#0178;R
       }
     },
@@ -157,6 +180,29 @@ i18next.init({
         type: 'Type',
         val: 'Value'
       },
+      activitylist: {
+        activitylist: 'List of Activities',
+        activity: 'Activity',
+        reqs: 'Requirements Elicited',
+        noactivity: 'No activities found',
+        changes: 'Changes detected',
+        deleted: 'Activity deleted',
+        add: 'Activity added'
+      },
+      elicit: {
+        backtolist: 'Back to Activity List',
+        reqlisttt: 'This is the list of all requirements elicited from the currently selected activity. If changes to the previous version are detected, you can get information about the nature of the change by hovering over the text parts higlighted in orange.',
+        template: '',
+        consistency: '',
+        info: 'Here you find all neccessary context information to elicit requirements from the currently selected activity.',
+        context: 'Activity´s Context Information',
+        name: 'Name',
+        activitytype: 'Activity Type',
+        role: 'Role',
+        doc: 'Documents',
+        pre: 'Predecessor',
+        sys: 'Systems'
+      },
       brand: 'CARE' //BeeP&#0178;R
 		}
 	}
@@ -182,9 +228,14 @@ i18next.init({
 * Updates view content with localization
 */
 function updateContent() {
+  //localize
   $('.brand').localize();
   $('.nav').localize();
   $('#main-content').localize();
+  
+  //recalculate tooltips
+  $('[data-toggle="tooltip"]').tooltip('destroy');
+  $('[data-toggle="tooltip"]').tooltip(); 
 }
 
 /*
@@ -196,14 +247,6 @@ function setLngDE(){
 	$('#lang-de').addClass('activeLng');
   $('#lang-en').addClass('care-link');
   $('#lang-de').removeClass('care-link');
-  
-  //deprecated flag labels
-	$('#lng-label-en').removeClass('label label-success');
-	$('#lng-label-de').addClass('label label-success');
-	$('#lng-label-en-big').removeClass('label label-default');
-	$('#lng-label-de-big').addClass('label label-default');
-	$('#lang-en-big').removeClass('activeLng');
-	$('#lang-de-big').addClass('activeLng');
   
   //language specific GUI elements
   $('.en-only').hide();
@@ -223,14 +266,6 @@ function setLngEN(){
   $('#lang-de').addClass('care-link');
   $('#lang-en').removeClass('care-link')
   
-  //deprecated flag labels
-	$('#lng-label-de').removeClass('label label-success');
-	$('#lng-label-en').addClass('label label-success');
-	$('#lng-label-de-big').removeClass('label label-default');
-	$('#lng-label-en-big').addClass('label label-default');
-	$('#lang-de-big').removeClass('activeLng');
-	$('#lang-en-big').addClass('activeLng');
-  
   //language specific GUI elements
   $('.en-only').show();
   $('.de-only').hide();
@@ -243,6 +278,5 @@ function setLngEN(){
 * Listener for language change events, triggers update
 */
 i18next.on('languageChanged', () => {
-  //moment.locale(lng);
   updateContent();
 });

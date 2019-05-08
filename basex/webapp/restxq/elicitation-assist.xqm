@@ -1,11 +1,9 @@
 (:~
- : Diese Modul generiert die Ansicht für den Assistenten. Er besteht aus der Anzeige der Inkonsistenzen, 
- : der Kontextinformationen der Aktivität, der Schabloneneingabe und der Liste der  
- : Anforderungen der Aktivität.
- : @see masterthesis/modules/care/view/consistency-view (Anzeige der Inkonsistenzen)
- : @see masterthesis/modules/care/view/stancil-view (Schabloneneingabe)
- : @see masterthesis/modules/care/view/list-view (Liste der Anforderungen, die mit der Aktivität verknüpft sind)
- : @see masterthesis/modules/care/view/info-view (Kontextinformationen der Aktivität)
+ : Elicitation assistance view. Combines inconsistency panel, activity context information panel, template editor, and list of requirements for this activity
+ : @see masterthesis/modules/care/view/consistency-view (inconsistency panel)
+ : @see masterthesis/modules/care/view/stancil-view (template editor)
+ : @see masterthesis/modules/care/view/list-view (list of requirements for this activity)
+ : @see masterthesis/modules/care/view/info-view (activity context information panel)
  : @version 1.1
  : @author Florian Eckey, Katharina Großer
  :)
@@ -28,123 +26,132 @@ declare namespace c="care";
 
 
 (:~
- : Diese Funktion erzeugt den HTML-Inhalt der Assistenzansicht. Es werden die einzelnen Panels zusammengesetzt.  Der Inhalt wird in das UI-Template eingebunden.
- : @param $pkg-id Die ID des Paketes, zu der die Aktivitätenliste angezeigt wird
- : @param $pkg-version Versions-ID des Paketes, zu der die Aktivitätenliste angezeigt wird
- : @param $ref-id Die ID der Aktivität, zu der der Assistent angezeigt wird
- : @param $req-id Ausgewählte ID der Anforderung, falls diese für die Bearbeitung angewählt wurde
- : @return Assistenz-Ansicht (XHTML)
+ : Generates elicitation assistance view, by combination of required panels, to be embedded into the GUI template
+ : @param $pkg-id package ID of selected package
+ : @param $pkg-version version ID of selected package
+ : @param $ref-id activity ID of selected activity
+ : @param $req-id requirement ID of (optionally) selected requirement
+ : @param $lng active GUI language
+ : @return elicitation assistance view (XHTML)
  :)
 declare
-  %rest:path("requirements-manager/assist/{$pkg-id}/{$pkg-version}/{$ref-id}")
+  %rest:path("requirements-manager/assist/{$pkg-id}/{$pkg-version}/{$ref-id}/{$lng}")
   %restxq:query-param("req-id","{$req-id}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
   %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
-  function page:start($pkg-id, $pkg-version, $ref-id, $req-id)
-  as element(Q{http://www.w3.org/1999/xhtml}html) {
-    let $current-package := cm:get($pkg-id,$pkg-version)
-    let $compare-package := cm:get($pkg-id,cm:package-before($current-package)/@VersionId/string())
-    let $inconsistencies := if($compare-package) then diff:Activity($compare-package/c:Activity[@Id=$ref-id]/c:ContextInformation,$current-package/c:Activity[@Id=$ref-id]/c:ContextInformation) else ()
-    let $care-ref := cm:get($pkg-id, $pkg-version)/c:Activity[@Id=$ref-id]
-    let $inconsistencies := consistencymanager:check-consistency($care-ref, $inconsistencies)
-    return
-    ui:page(
-      <div class="container-fluid">
-        <div class="col-md-12">
-          {reconsistencyview:consistency-panel($current-package,$compare-package, $ref-id, $req-id, $inconsistencies)}
-        </div>
-        <div class="col-md-4">
-            {reinfoview:info-panel($current-package,$compare-package, $ref-id, $req-id,$inconsistencies)}
-        </div>
-        <div class="col-md-8">
-          {restancilview:stancil-panel($current-package,$compare-package, $ref-id,$req-id)}       
-          {relistview:list-panel($current-package,$compare-package, $ref-id, $req-id, $inconsistencies)}
-        </div>
+  function page:start($pkg-id, $pkg-version, $ref-id, $req-id, $lng)
+    as element(Q{http://www.w3.org/1999/xhtml}html) {
+      
+      let $current-package := cm:get($pkg-id,$pkg-version)
+      let $compare-package := cm:get($pkg-id,cm:package-before($current-package)/@VersionId/string())
+      let $inconsistencies := if($compare-package) then 
+                                diff:Activity($compare-package/c:Activity[@Id=$ref-id]/c:ContextInformation,$current-package/c:Activity[@Id=$ref-id]/c:ContextInformation)
+                              else ()
+      let $care-ref := cm:get($pkg-id, $pkg-version)/c:Activity[@Id=$ref-id]
+      let $inconsistencies := consistencymanager:check-consistency($care-ref, $inconsistencies)
+      
+      return
+        ui:page($lng,
         
-
-        <div class="col-md-12">
-          {page:buttons($current-package, $compare-package,$ref-id)}   
-        </div>
-        <script><![CDATA[
-            $(function () {
-              $('[data-toggle="tooltip"]').tooltip({html:'true'})
-            })
-        ]]></script>
-      </div> 
-    )
+          <div class="container-fluid">
+            <div class="col-md-12">
+              {reconsistencyview:consistency-panel($current-package, $compare-package, $ref-id, $req-id, $inconsistencies)}
+            </div>
+            <div class="col-md-4">
+                {reinfoview:info-panel($current-package, $compare-package, $ref-id, $req-id, $inconsistencies)}
+            </div>
+            <div class="col-md-8">
+              {restancilview:stancil-panel($current-package, $compare-package, $ref-id, $req-id, $lng)}       
+              {relistview:list-panel($current-package, $compare-package, $ref-id, $req-id, $inconsistencies, $lng)}
+            </div>
+            
+    
+            <div class="col-md-12">
+              {page:buttons($current-package, $compare-package, $ref-id, $lng)}   
+            </div>
+            <script><![CDATA[
+                $(function () {
+                  $('[data-toggle="tooltip"]').tooltip({html:'true'})
+                })
+            ]]></script>
+          </div> 
+       )
 };
 
 (:~
- : Diese Funktion die Vor- und Zurück-Buttons, um im Assistenten zwischen den Aktivitäten hin und herzuschalten und den Zurückbutton, um zur Aktivitätenliste zu gelangen.
- : @param $current-package Das akutelle Paket, zu dem die Assistenz-An angezeigt wird
- : @param $compare-package Das Paket, mit dem verglichen wird
- : @param $ref-id Die ID der Aktivität, zu der der Assistent angezeigt wird
- : @return Buttonleiste (XHTML)
+ : Generates buttons to navigate foreward and backward through the activities and back to the activity list
+ : @param $current-package current package
+ : @param $compare-package package to compare the current package with
+ : @param $ref-id activity ID of selected activity
+ : @param $lng active GUI language
+ : @return button panel (XHTML)
  :)
-declare function page:buttons($current-package, $compare-package,$ref-id) {
-          let $data-set := cm:filter($current-package, $compare-package,$ref-id)
-          let $next-element := util:next-ts($data-set,$data-set[@Id=$ref-id])
-          let $prev-element := util:prev-ts($data-set,$data-set[@Id=$ref-id]) 
+declare function page:buttons($current-package, $compare-package, $ref-id, $lng) {
+          let $data-set := cm:filter($current-package, $compare-package, $ref-id)
+          let $next-element := util:next-ts($data-set, $data-set[@Id=$ref-id])
+          let $prev-element := util:prev-ts($data-set, $data-set[@Id=$ref-id]) 
           return (
-            if(util:index-of($data-set,$data-set[@Id=$ref-id])<count($data-set)) 
-            then <div class="panel-btn pull-right">
-                   <a href="{$ui:prefix}/requirements-manager/assist/{$current-package/@Id}/{$current-package/@VersionId}/{$next-element/@Id}" id="nextPage" class="fui-arrow-right pull-right"></a> 
-                 </div> 
-            else ()
-            ,if(util:index-of($data-set,$data-set[@Id=$ref-id])>1) 
-             then <div class="panel-btn">  
-                   <a href="{$ui:prefix}/requirements-manager/assist/{$current-package/@Id}/{$current-package/@VersionId}/{$prev-element/@Id}" id="prevPage" class="fui-arrow-left"></a> 
-                 </div> 
-             else ()
-            ,<div class="panel-btn back"> <a href="{$ui:prefix}/requirements-manager/package/{$current-package/@Id}/{$current-package/@VersionId}" id="prevPage">Zur Aktivitätenliste</a></div>
+            if(util:index-of($data-set, $data-set[@Id=$ref-id]) < count($data-set)) then
+              <div class="panel-btn pull-right">
+                <a href="{$ui:prefix}/requirements-manager/assist/{$current-package/@Id}/{$current-package/@VersionId}/{$next-element/@Id}/{$lng}" id="nextPage" class="fui-arrow-right pull-right"></a> 
+              </div> 
+            else (),
+            if(util:index-of($data-set, $data-set[@Id=$ref-id]) > 1) then
+              <div class="panel-btn">  
+                <a href="{$ui:prefix}/requirements-manager/assist/{$current-package/@Id}/{$current-package/@VersionId}/{$prev-element/@Id}/{$lng}" id="prevPage" class="fui-arrow-left"></a> 
+              </div> 
+            else (),
+            <div class="panel-btn back"><a href="{$ui:prefix}/requirements-manager/package/{$current-package/@Id}/{$current-package/@VersionId}/{$lng}" id="prevPage" data-i18n="elicit.backtolist"></a></div>
         )
 };
 
 (:~
- : Diese Funktion stellt den REST-Aufruf für das Löschen einer Anforderung in der Datenbank dar. Sie ruft eine Funktion im REPO auf, welche das Löschen übernimmt.
- : @param $pkg-id Die ID des Paketes
- : @param $pkg-version Versions-ID des Prozesses
- : @param $ref-id Die ID der Aktivität
- : @param $req-id ID der Anforderung
- : @return Redirekt auf die Assistenz-Ansicht
+ : Handle for REST call to delete a requirement from the database. Proxy for REPO delete function
+ : @param $pkg-id package ID
+ : @param $pkg-version version ID of package requirement to delete belongs to
+ : @param $ref-id activity ID of activity requirement to delete belongs to
+ : @param $req-id requirement ID of requirement to delete
+ : @param $lng active GUI language
+ : @return redirect to elicitation assistance view
  :)
-declare %restxq:path("relist/delete/{$pkg-id}/{$pkg-version}/{$ref-id}/{$req-id}")
-        updating function page:requirements-delete-itemReq($pkg-id, $pkg-version, $ref-id,$req-id) {
-         re:delete-requirement($pkg-id, $pkg-version, $ref-id, $req-id)
-         ,db:output(<restxq:redirect>/requirements-manager/assist/{$pkg-id}/{$pkg-version}/{$ref-id}</restxq:redirect>)
+declare %restxq:path("relist/delete/{$pkg-id}/{$pkg-version}/{$ref-id}/{$req-id}/{$lng}")
+        updating function page:requirements-delete-itemReq($pkg-id, $pkg-version, $ref-id, $req-id, $lng) {
+           re:delete-requirement($pkg-id, $pkg-version, $ref-id, $req-id),
+           db:output(<restxq:redirect>/requirements-manager/assist/{$pkg-id}/{$pkg-version}/{$ref-id}/{$lng}</restxq:redirect>)
 };
 
 (:~
- : Diese Funktion stellt den REST-Aufruf für das Einfügen einer Anforderung in die Datenbank dar. Sie ruft eine Funktion im REPO auf, welche das Einfügen übernimmt und leitet alle möglichen Werte aller Varianten an diese weiter.
- : @param $pkg-id ID des Paketes
- : @param $pkg-version-id Version des Paketes
- : @param $ref-id ID der Aktivität
- : @param $req-id ID der Anforderung
- : @param $template-type Variante der MASTER-Schablone (Funktional, Prozess, Umgebung, Eigenschaft)
- : @param $condition-type Typ der Bedingung 
- : @param $condition-comparisonItem Vergleichsobjekt-Baustein der Bedingung
- : @param $condition-comparisonOperator Vergleichsoperator der Bedingung
- : @param $condition-value Wert-Baustein der Bedingung 
- : @param $condition-event Subjekt der Bedingung (Ereignis)
- : @param $condition-actor Akteur der Bedingung
- : @param $event-object Objekt der Bedingung
- : @param $event-function Funktion referenziert in der Bedingung
- : @param $event-verb Prozesswort der Bedingung
- : @param $system System-Baustein der anforderung
- : @param $liability Priorität-Baustein der Anforderung
- : @param $actor Akteur-Baustein der Anforderung
- : @param $functionality Art der Funktionalität-Baustein der Anforderung
- : @param $object-detail1 Präzisierung 1-Baustein des Objekts
- : @param $object Objekt-Baustein der Anforderung
- : @param $object-detail2 Präzisierung 2-Baustein des Objekts
- : @param $processverb-detail Konkretisierungs-Baustein des Prozesswortes
- : @param $processverb Prozesswort-Baustein
- : @param $category Kategorie der Anforderung
- : @return Redirekt auf die Assistenz-Ansicht
+ : Handle for REST call to add a requirement to the database. Proxy for REPO function to add requirements, where all values for all possible variants are passed to.
+ : @param $pkg-id package ID of package the requirement belongs to
+ : @param $pkg-version-id version ID of package
+ : @param $ref-id ID activity ID of activity the requirement belongs to
+ : @param $req-id ID requirement ID
+ : @param $template-type variant of MASTER template (functional, process, environment, property)
+ : @param $condition-type condition type (event, logical, time-span) 
+ : @param $condition-comparisonItem comparison object of a condition
+ : @param $condition-comparisonOperator relational operator of a condition
+ : @param $condition-value camparison value of a condition 
+ : @param $condition-event subject of an event-driven condition
+ : @param $condition-actor actor of a condition
+ : @param $event-object object of a condition
+ : @param $event-function function used in a condition
+ : @param $event-verb process verb of a condition
+ : @param $system system or subject described by the requirement
+ : @param $liability legal liability (modal verb) of the requirement
+ : @param $actor actor of the requirement
+ : @param $functionality type of system activity description
+ : @param $object-detail1 detail prefix to the requirement object
+ : @param $object object of the requirement
+ : @param $object-detail2 detail postfix to the requirement object
+ : @param $processverb-detail detail description of the process (complementing the process verb)
+ : @param $processverb process verb
+ : @param $category requirement category
+ : @param $lng active GUI language
+ : @return redirect to elicitation assistance view
  :)
-declare %restxq:path("restancil/save/{$pkg-id}/{$pkg-version-id}/{$ref-id}")
+declare %restxq:path("restancil/save/{$pkg-id}/{$pkg-version-id}/{$ref-id}/{$lng}")
         %restxq:POST
         %restxq:query-param("req-id","{$req-id}")   
         %restxq:query-param("template-type","{$template-type}","")   
@@ -168,13 +175,15 @@ declare %restxq:path("restancil/save/{$pkg-id}/{$pkg-version-id}/{$ref-id}")
         %restxq:query-param("processverb-detail","{$processverb-detail}","")
         %restxq:query-param("processverb","{$processverb}","")
         %restxq:query-param("category","{$category}","")
-        updating function page:save-requirement($pkg-id, $pkg-version-id, $ref-id, $req-id, $template-type, $condition-type, $condition-comparisonItem, $condition-comparisonOperator, $condition-value, $condition-event, $event-actor, $event-object, $event-function, $event-verb, $logicexpression, $system, $liability, $actor, $functionality, $object-detail1, $object, $object-detail2, $processverb-detail, $processverb, $category) {
+        updating function page:save-requirement($pkg-id, $pkg-version-id, $ref-id, $req-id, $template-type, $condition-type, $condition-comparisonItem, $condition-comparisonOperator, $condition-value, $condition-event, $event-actor, $event-object, $event-function, $event-verb, $logicexpression, $system, $liability, $actor, $functionality, $object-detail1, $object, $object-detail2, $processverb-detail, $processverb, $category, $lng) {
+          
           let $condition := switch($condition-type)
                              case "event" return re:new-condition-event($condition-event, $event-actor, $event-object)
                              case "logic" return re:new-condition-logic($condition-comparisonItem, $condition-comparisonOperator, $condition-value, $logicexpression)
                              case "timespan" return re:new-condition-timespan($logicexpression)
                              default return ()
+                             
            return
-           re:save($pkg-id,$pkg-version-id,$ref-id,$req-id,$template-type,$condition,$system,$liability,$actor,$functionality,$object-detail1,$object,$object-detail2,$processverb-detail,$processverb,$category)
-           ,db:output(<restxq:redirect>/requirements-manager/assist/{$pkg-id}/{$pkg-version-id}/{$ref-id}</restxq:redirect>)
+             re:save($pkg-id, $pkg-version-id, $ref-id, $req-id, $template-type, $condition, $system, $liability, $actor, $functionality, $object-detail1, $object, $object-detail2, $processverb-detail, $processverb, $category, $lng),
+             db:output(<restxq:redirect>/requirements-manager/assist/{$pkg-id}/{$pkg-version-id}/{$ref-id}/{$lng}</restxq:redirect>)
 };

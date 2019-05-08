@@ -22,14 +22,14 @@ declare namespace c="care";
  : @return Anforderungsliste (XHTML)
  :)
 declare
-  %rest:path("requirements-manager/list/{$pkg-id}/{$pkg-version}")
+  %rest:path("requirements-manager/list/{$pkg-id}/{$pkg-version}/{$lng}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
   %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
-  function page:start($pkg-id, $pkg-version)
+  function page:start($pkg-id, $pkg-version, $lng)
   as element(Q{http://www.w3.org/1999/xhtml}html) {
-    ui:page(
+    ui:page($lng,
       <div class="container-fluid">
         <div class="col-md-12">
           {page:view-elements($pkg-id, $pkg-version)}
@@ -48,14 +48,14 @@ declare
  : @return Anforderungsliste (XHTML)
  :)
 declare
-  %rest:path("requirements-manager/list")
+  %rest:path("requirements-manager/list/{$lng}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
   %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
-  function page:start()
+  function page:start($lng)
   as element(Q{http://www.w3.org/1999/xhtml}html) {
-    ui:page(
+    ui:page($lng,
       <div class="container-fluid">
         <div class="col-md-12">
           {page:view-elements()}

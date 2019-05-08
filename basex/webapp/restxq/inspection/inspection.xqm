@@ -15,23 +15,23 @@ declare namespace i="inspections";
  : Diese Funktion bettet den HTML-Inhalt der Dokumentation der Liste aller XQuery-Module in das UI-Template ein.
  : @return Liste der Dokumentationen zu den XQuery-Modulen (XHTML) in UI-Template
  :)
-declare %restxq:path("inspection")
+declare %restxq:path("inspection/{$lng}")
         %restxq:GET
         %output:method("html")
         %output:version("5.0")
-  function page:import() {
-    ui:page((
-      <div class="col-md-8">{page:module-list()}</div>
-      ,<div class="col-md-4"><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/inspection/modules/generate" data-i18n="[title]docu.graphtitle;docu.graph"></a></div>))
-};
+  function page:import($lng) {
+    ui:page($lng,(
+      <div class="col-md-8">{page:module-list($lng)}</div>,
+      <div class="col-md-4"><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/inspection/modules/generate" data-i18n="[title]docu.graphtitle;docu.graph"></a></div>)
+)};
 
 (:~
  : Diese Funktion generiert den HTML-Inhalt der Tabell, in der die Dokumentationen der XQuery-Module referenziert sind.
  : @return Tabelle der Dokumentationen zu den XQuery-Modulen (XHTML)
  :)
-declare %restxq:path("module-list")
+declare %restxq:path("module-list/{$lng}")
         %output:method("html")
-        function page:module-list() {
+        function page:module-list($lng) {
           let $modules := inspection:get-modules() return
           <div id="module-list">                
               <table class="table table-hover noindent">
@@ -46,7 +46,7 @@ declare %restxq:path("module-list")
                </thead>
                <tbody>
                {for $module in $modules/xd:xqdoc return
-                page:module-item($modules,$module)}
+                page:module-item($modules,$module,$lng)}
                  </tbody>               
                </table>
             </div>
@@ -58,7 +58,7 @@ declare %restxq:path("module-list")
  : @param $module Betrachtetes XQuery-Modul
  : @return Tabellen-Zeile der Dokumentationen zu einem XQuery-Modul (XHTML)
  :)
-declare function page:module-item($modules,$module) {
+declare function page:module-item($modules,$module,$lng) {
           let $uri-hex := xs:hexBinary(hash:md5($module/xd:module/xd:uri/string()))
           let $name := $module/xd:module/xd:name/string()
           let $uri := $module/xd:module/xd:uri/string()
@@ -66,7 +66,7 @@ declare function page:module-item($modules,$module) {
           let $function-count := count($module/xd:functions/xd:function)
           let $module-path := $module/@path/string()
           return
-          <tr onclick="window.document.location='inspection/module/{$uri-hex}'" style="cursor:pointer; {if($uses or contains($module-path,'restxq')) then () else 'color:red'}">
+          <tr onclick="window.document.location='module/{$uri-hex}/{$lng}'" style="cursor:pointer; {if($uses or contains($module-path,'restxq')) then () else 'color:red'}">
             <td class="vertical-middle" style="width:20%">{$name}</td>
             
             <td class="vertical-middle" style="width:20%">{$uri}</td>

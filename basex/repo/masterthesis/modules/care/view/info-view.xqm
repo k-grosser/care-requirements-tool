@@ -1,7 +1,7 @@
 (:~
- : Dieses Modul stellt Funktionen für die Generigung des HTML Inhalts für die Ansicht der Kontextinformationene einer Aktivität zur Verfügung
+ : Activity context information panel
  : @version 1.1
- : @author Florian Eckey
+ : @author Florian Eckey, Katharina Großer
 :)
 module namespace reinfoview="masterthesis/modules/care/view/info-view";
 
@@ -13,37 +13,37 @@ declare namespace c="care";
 declare namespace g="glossary";
 
 (:~
-: Diese Funktion generiert den HTML Inhalt für das Panel, in dem die Kontextinformationen dargestellt sind.
-: @param $current-package Das Paket, zu dem die Kontextinformationen angezeigt werden
-: @param $compare-package Das Paket, mit dem die Kontextinformationen verglichen werden
-: @param $ref-id Die ID der Aktivität, zu der die Kontextinformationen angezeigt werden
-: @param $req-id Ausgewählte ID der Anforderung, falls diese für die Bearbeitung angewählt wurde
-: @param $changes Unterschiede Kontextinformationen der Aktivität zur Vorgänger-Version 
-: @return HTML-Seite für die Ansicht der Kontextinformationen in der Assitenz-Ansicht
+: Generates the context information panel fo a given activity.
+: @param $current-package current package
+: @param $compare-package package current package is compared to
+: @param $ref-id activity ID of selected activity
+: @param $req-id requirements ID of (optionally) selected requirement
+: @param $changes differences in context information compared to previous version 
+: @returncontext information panel (XHTML)
 :)
-declare function reinfoview:info-panel($current-package,$compare-package,$ref-id, $req-id, $changes) {
+declare function reinfoview:info-panel($current-package, $compare-package, $ref-id, $req-id, $changes) {
   <div class="collapse-panel re-collapse-panel info-panel-header">
     <div class="header" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">
       <dl class="palette">
-        <dt>Kontextinformationen der Aktivität{ui:info-tooltip("Hier befinden sich alle für die Erhebung von Anforderungen relevanten Kontextinformationen der aktuell betrachteten Aktivität. Nutzen Sie diese um Anforderungen mit Hilfe der SOPHIST Schablone abzuleiten.")}</dt>
+        <dt><span data-i18n="[html]elicit.context"></span>{ui:info-tooltip("elicit.info")}</dt>
       </dl>
     </div>
     <div class="collapse in" id="collapseInfo">
-      {reinfoview:info-div($current-package,$compare-package,$ref-id, $req-id, $changes)}
+      {reinfoview:info-div($current-package, $compare-package, $ref-id, $req-id, $changes)}
     </div>
   </div>
 };
 
 (:~
-: Diese Funktion generiert den HTML Inhalt für den Inhalt des Panels, in dem die Kontextinformationen dargestellt sind 
-: @param $current-package Das Paket, zu dem die Kontextinformationen angezeigt werden
-: @param $compare-package Das Paket, zu dem die Kontextinformationen angezeigt werden
-: @param $ref-id Die ID der Aktivität, zu der die Kontextinformationen angezeigt werden
-: @param $req-id Ausgewählte ID der Anforderung, falls diese für die Bearbeitung angewählt wurde
-: @param $inconsistencies Inkonsistenzen für die Aktivität mit ID $ref-id
-: @return HTML-Panel für die Anzeige der Inkonsistenzen
+: Generates the content of the context information panel from the selected activity's data 
+: @param $current-package current package
+: @param $compare-package package the current package is compared to
+: @param $ref-id activity ID of the selected activity
+: @param $req-id requirement ID of the (optionally) selected requirement
+: @param $inconsistencies inconsistencies for the selected activity
+: @return context information list with inconsistencies (XHTML)
 :)
-declare function reinfoview:info-div($current-package,$compare-package,$ref-id, $req-id, $inconsistencies) {  
+declare function reinfoview:info-div($current-package, $compare-package, $ref-id, $req-id, $inconsistencies) {  
   let $act-info-before := $compare-package/c:Activity[@Id=$ref-id]/c:ContextInformation
   let $act-info-current := $current-package/c:Activity[@Id=$ref-id]/c:ContextInformation
   
@@ -68,26 +68,26 @@ declare function reinfoview:info-div($current-package,$compare-package,$ref-id, 
   let $predecessors := $predecessors-current | $predecessors-before[not(@Id=$predecessors-current/@Id)]
   
   return 
-      <div id="info-div" class="panel-box info-panel">
+     <div id="info-div" class="panel-box info-panel">
     
-       {reinfoview:info-element("Name"
-                          ,<span style="font-weight:bold">{reinfoview:diff-name($inconsistencies,$act-info-current/c:Name)}</span>)}
+       {reinfoview:info-element("elicit.name",
+                                  <span style="font-weight:bold">{reinfoview:diff-name($inconsistencies, $act-info-current/c:Name)}</span>)}
        
-       {reinfoview:info-element("Aktivität-Typ"
-                          ,reinfoview:diff-taskType($inconsistencies,$act-info-current/c:TaskType))}
+       {reinfoview:info-element("elicit.activitytype",
+                                  reinfoview:diff-taskType($inconsistencies, $act-info-current/c:TaskType))}
        
-       {reinfoview:info-element("Rolle"
-                          ,reinfoview:diff-perf($inconsistencies,$act-info-current/c:Performer))}
+       {reinfoview:info-element("elicit.role",
+                                  reinfoview:diff-perf($inconsistencies,$act-info-current/c:Performer))}
        
-       {reinfoview:info-element("Dokumente"
-                          ,(for $doInput in $doInputs return reinfoview:diff-doInputs($inconsistencies,$doInput)
-                          ,for $doOutput in $doOutputs return reinfoview:diff-doOutputs($inconsistencies,$doOutput)))}
-       {reinfoview:info-element("Systeme"
-                          ,(for $dsInput in $dsInputs return reinfoview:diff-dsInputs($inconsistencies,$dsInput)
-                          ,for $dsOutput in $dsOutputs return reinfoview:diff-dsOutputs($inconsistencies,$dsOutput)))}
+       {reinfoview:info-element("elicit.doc",
+                                  (for $doInput in $doInputs return reinfoview:diff-doInputs($inconsistencies, $doInput),
+                                   for $doOutput in $doOutputs return reinfoview:diff-doOutputs($inconsistencies,$doOutput)))}
+       {reinfoview:info-element("elicit.sys",
+                                  (for $dsInput in $dsInputs return reinfoview:diff-dsInputs($inconsistencies,$dsInput),
+                                   for $dsOutput in $dsOutputs return reinfoview:diff-dsOutputs($inconsistencies,$dsOutput)))}
        
-       {reinfoview:info-element("Vorgänger"
-                          ,for $predecessor in $predecessors return reinfoview:diff-predecessors($inconsistencies,$predecessor))}
+       {reinfoview:info-element("elicit.pre",
+                                  for $predecessor in $predecessors return reinfoview:diff-predecessors($inconsistencies,$predecessor))}
                                  
     </div> 
 };
@@ -232,19 +232,20 @@ declare function reinfoview:diff-predecessors($changes,$predecessor) {
 };
 
 (:~
-: Diese Funktion generiert den HTML Code die Anzeige eines Kontextinformations-Elements
-: @param $key Name des Kontextinformations-Elements
-: @param $value Wert des Kontextinformations-Elements
-: @return HTML eines Elementes in den Kontextinformationen
+: Generates context information element
+: @param $key i18next key of the element's name
+: @param $value value of the element
+: @return context information element (XHTML)
 :)
 declare function reinfoview:info-element($key, $value) {
-  let $random-id := random:uuid() return
-  if($value and $value!="") then
-    <dl class="dl-horizontal">
-      <dt>{$key}</dt>
-      <dd >{$value}</dd>
-    </dl>
-  else ()
+  let $random-id := random:uuid()
+  return
+    if($value and $value!="") then
+      <dl class="dl-horizontal">
+        <dt data-i18n="{$key}"></dt>
+        <dd>{$value}</dd>
+      </dl>
+    else ()
 };
 
 (:~

@@ -14,7 +14,7 @@ declare variable $ui:prefix := "";
  : @param $content Der HTML Inhalt, welcher in die HTML Seite eingebettet werden soll
  : @return HTML Seite (komplett)
 :)
-declare function ui:page($content) {
+declare function ui:page($lng, $content) {
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <meta charset="utf-8"/>
@@ -33,9 +33,6 @@ declare function ui:page($content) {
       <!-- Loading Immybox Framework CSS -->
       <link rel='stylesheet' type='text/css' href='{$ui:prefix}/static/immybox-master/immybox.css'/>
       
-      <!-- Loading Flag-Icons CSS -->
-      <link href="{$ui:prefix}/static/flag-icon-css-master/css/flag-icon.css" rel="stylesheet"/>
-    
       <!-- Loading CARE UI -->
       <link href="{$ui:prefix}/static/care/css/care-ui.css" rel="stylesheet"/>
       <link href="{$ui:prefix}/static/care/css/requirements.css" rel="stylesheet"/>
@@ -79,9 +76,9 @@ declare function ui:page($content) {
         <script src="{$ui:prefix}/static/flat-ui/js/vendor/respond.min.js"></script>
       <![endif]-->
     </head>
-    <body> 
-      
-      {ui:navbar()}
+    <body onload="{if($lng = 'en') then 'setLngEN()' else ''}">
+          
+      {ui:navbar($lng)}
       <div id="main-content">{$content}</div>
 
     <script src="{$ui:prefix}/static/care/js/localization.js"></script>
@@ -90,10 +87,10 @@ declare function ui:page($content) {
 };
 
 (:~
- : Diese Funktion generiert die Navigationsleiste
- : @return HTML-div der Navigationsleiste
+ : Generated the menue bar
+ : @return menue bar (XHTML)
  :)
-declare function ui:navbar() {
+declare function ui:navbar($lng) {
 
   <div class="row demo-row">
         <div class="col-xs-12">
@@ -102,23 +99,19 @@ declare function ui:navbar() {
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
                 <span class="sr-only">Toggle navigation</span>
               </button>
-              <a class="navbar-brand brand" href="{$ui:prefix}/care" data-i18n="brand"></a>
+              <a class="navbar-brand brand" href="{$ui:prefix}/care/{$lng}" data-i18n="brand"></a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse-01">
+            
               <ul class="nav navbar-nav navbar-left">
-                <li><a id="processnav" href="{$ui:prefix}/requirements-manager" data-i18n="[html]navi.processmanager"></a></li><!--  -->
-
-                <li class="pull-right"><a href="{$ui:prefix}/requirements-manager/list"  data-i18n="[html]navi.reqlist"></a></li><!--  -->
-
-                <li class="pull-right"><a href="{$ui:prefix}/glossary" data-i18n="[html]navi.glossary"></a></li><!--  -->
-
+                <li><a id="processnav" href="{$ui:prefix}/requirements-manager/{$lng}" data-i18n="[html]navi.processmanager"></a></li>
+                <li class="pull-right"><a href="{$ui:prefix}/requirements-manager/list/{$lng}"  data-i18n="[html]navi.reqlist"></a></li>
+                <li class="pull-right"><a href="{$ui:prefix}/glossary/{$lng}" data-i18n="[html]navi.glossary"></a></li>
                </ul>
                
                <ul class="pull-right">
-                 <li class="pull-right lng-btn"><a id="lang-en" class="care-link" onclick="setLngEN()">EN</a></li> <!-- <span id="lng-label-en"><span class="flag-icon flag-icon-gb"></span></span> -->
-
-                 <li class="pull-right lng-btn"><a id="lang-de" class="activeLng" onclick="setLngDE()">DE</a></li> <!-- <span id="lng-label-de" class="label label-success"><span class="flag-icon flag-icon-de"></span></span> -->
-
+                 <li class="pull-right lng-btn"><a id="lang-en" class="care-link lng-btn" onclick="window.location = $(location).attr('href').replace('/de', '/en');">EN</a></li>
+                 <li class="pull-right lng-btn"><a id="lang-de" class="activeLng lng-btn" onclick="window.location = $(location).attr('href').replace('/en', '/de');">DE</a></li>
                </ul>
                
             </div>
@@ -128,12 +121,12 @@ declare function ui:navbar() {
 };
 
 (:~
- : Diese Funktion generiert den HTML Code für ein Tooltip
- : @param $description Beschreibungs-Text (HTML), der in dem Tooltip angezeigt werden soll
- : @return HTML, welches das Tooltip darstellt
+ : Generates XHTML code for info tooltips based on bootstrap tooltips
+ : @param $descriptionkey i18next key of the description text that is shown in the tooltip
+ : @return tooltip XHTML
  :)
-declare function ui:info-tooltip($description) {
-  <i data-toggle="tooltip" data-placement="left" data-template="{util:serialize-html(<div class='tooltip' role='tooltip'><div class='tooltip-arrow'/><div class='info-tooltip tooltip-inner'/></div>)}" title="{$description}" class="glyphicon glyphicon-question-sign pull-right" style="font-size:17pt"/>
+declare function ui:info-tooltip($descriptionkey) {
+  <i data-toggle="tooltip" data-placement="left" data-template="{util:serialize-html(<div class='tooltip' role='tooltip'><div class='tooltip-arrow'/><div class='info-tooltip tooltip-inner'/></div>)}" data-i18n="[title]{$descriptionkey}" class="glyphicon glyphicon-question-sign pull-right" style="font-size:17pt"/>
 };
 
 (:~

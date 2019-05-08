@@ -19,7 +19,7 @@ declare
   %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
   function page:care()
   as element(Q{http://www.w3.org/1999/xhtml}html) {
-    page:start()
+    page:start("de")
 };
 
 (:~
@@ -27,36 +27,44 @@ declare
  : @return Startseite (XHTML)
  :)
 declare
-  %rest:path("care")
+  %rest:path("care-webapp/{$lng}")
   %output:method("xhtml")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
   %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
-  function page:start()
+  function page:care($lng)
   as element(Q{http://www.w3.org/1999/xhtml}html) {
-    ui:page(
+    page:start($lng)
+};
+
+(:~
+ : Diese Funktion erzeugt den HTML-Inhalt der Startseite. Der Inhalt wird in das UI-Template eingebunden.
+ : @return Startseite (XHTML)
+ :)
+declare
+  %rest:path("care/{$lng}")
+  %output:method("xhtml")
+  %output:omit-xml-declaration("no")
+  %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
+  %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
+  function page:start($lng)
+  as element(Q{http://www.w3.org/1999/xhtml}html) {
+    ui:page($lng,
       <div class="container">
           <div class="login">
             <div class="login-screen" style="width:81.3%;font-size:1.5em">
               <span data-i18n="home.welcome"></span> <span class="brand" data-i18n="brand"></span> ... 
-              
-              <!-- 
-              &#160;
-<a id="lang-de-big" class="activeLng" onclick="setLngDE()"><span id="lng-label-de-big" class="label label-default"><span class="flag-icon flag-icon-de"></span></span></a>
-              &#160;
-              <a id="lang-en-big" onclick="setLngEN()"><span id="lng-label-en-big"><span class="flag-icon flag-icon-gb"></span></span></a> 
-               -->
                
                <div style="font-size:13pt">
                <span data-i18n="home.system"></span>
                
-                <a href="{$ui:prefix}/requirements-manager" style="color:green" data-i18n="[html]home.go"></a>
+                <a href="{$ui:prefix}/requirements-manager/{$lng}" style="color:green" data-i18n="[html]home.go"></a>
                </div>
                <div style="font-size:13pt">
-                <a href="{$ui:prefix}/setup" style="color:green" data-i18n="home.loadndelete"></a>
+                <a href="{$ui:prefix}/setup/{$lng}" style="color:green" data-i18n="home.loadndelete"></a>
                </div>
                <div style="font-size:13pt">
-                <a href="{$ui:prefix}/inspection" style="color:green" data-i18n="home.docs"></a><br/>
+                <a href="{$ui:prefix}/inspection/{$lng}" style="color:green" data-i18n="home.docs"></a><br/>
                 
                 <span data-i18n="[html]home.authors"></span><br/>
                 </div>
@@ -71,12 +79,12 @@ declare
  : @return Redirekt auf die Startseite
  :)
 declare
-  %rest:path("setup")
-  updating function page:setup() {
+  %rest:path("setup/{$lng}")
+  updating function page:setup($lng) {
     db:create("care-packages")
     ,db:create("inspection",<Inspections xmlns="inspections"/>,"inspections.xml")
     ,db:create("glossary",<Glossary xmlns="glossary"/>,"glossary.xml")
-    ,db:output(<restxq:redirect>/care</restxq:redirect>)
+    ,db:output(<restxq:redirect>/care/{$lng}</restxq:redirect>)
   };
 
 (:~
@@ -84,10 +92,10 @@ declare
  : @return Redirekt auf die Startseite
  :)
 declare
-  %rest:path("setup/drop")
-  updating function page:setup-drop() {
+  %rest:path("setup/drop/{$lng}")
+  updating function page:setup-drop($lng) {
     db:drop("care-packages")
     ,db:drop("inspectiosn")
     ,db:drop("glossary")
-    ,db:output(<restxq:redirect>/care</restxq:redirect>)
+    ,db:output(<restxq:redirect>/care/{$lng}</restxq:redirect>)
   };
