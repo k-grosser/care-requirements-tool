@@ -97,16 +97,19 @@ declare function reinfoview:info-div($current-package, $compare-package, $ref-id
        
        {reinfoview:info-element("elicit.role",
                                   reinfoview:diff-perf($inconsistencies, $act-info-current/c:Performer))}
+                                  
+       {reinfoview:info-element("elicit.system",
+                                  reinfoview:diff-part($inconsistencies, $act-info-current/c:Participant))}
        
        {reinfoview:info-element("elicit.doc",
                                   (if ($doCount > 1) then
                                     <ol type="a"> 
-                                      {for $doInput in $doInputs return <li>{reinfoview:diff-doInputs($inconsistencies, $doInput)}</li>,
-                                      for $doOutput in $doOutputs return <li>{reinfoview:diff-doOutputs($inconsistencies, $doOutput)}</li>}
+                                      {for $doInput in $doInputs return <li>{reinfoview:diff-doInputs($inconsistencies, $doInput), reinfoview:diff-doState($inconsistencies, $doInput)}</li>,
+                                      for $doOutput in $doOutputs return <li>{reinfoview:diff-doOutputs($inconsistencies, $doOutput), reinfoview:diff-doState($inconsistencies, $doOutput)}</li>}
                                     </ol>
                                    else 
-                                       for $doInput in $doInputs return reinfoview:diff-doInputs($inconsistencies, $doInput),
-                                       for $doOutput in $doOutputs return reinfoview:diff-doOutputs($inconsistencies, $doOutput)
+                                       (for $doInput in $doInputs return (reinfoview:diff-doInputs($inconsistencies, $doInput), reinfoview:diff-doState($inconsistencies, $doInput)),
+                                       for $doOutput in $doOutputs return (reinfoview:diff-doOutputs($inconsistencies, $doOutput), reinfoview:diff-doState($inconsistencies, $doOutput)))
                                    ))}
                                    
        {reinfoview:info-element("elicit.sys",
@@ -176,6 +179,28 @@ declare function reinfoview:diff-perf($changes, $performer) {
 };
 
 (:~
+: Generates differences visualization for the contex information panel for the activity's participant (system)
+: @param $changes differences to the previous version of the activity's context information 
+: @param $participant participant of activity
+: @return visialization of activity participant differnces (XHTML)
+:)
+declare function reinfoview:diff-part($changes, $participant) {
+  
+  let $relevant-changes := $changes[@Type=("CHANGE:ACT_PART") and @ReferenceId=$participant/@Id] 
+  
+  return
+    switch($relevant-changes/@Operation)
+      case "update" return (<span style="text-decoration: line-through;color:red">{$relevant-changes/@From/string()}</span>,
+                            <span style="color:green">{reinfoview:link-html-glossary($relevant-changes/@To/string())}</span>)
+                            
+      case "delete" return <span style="color:red;text-decoration: line-through">{$changes/@From/string()}</span>
+      
+      case "insert" return <span style="color:green">{reinfoview:link-html-glossary($relevant-changes/@To/string())}</span>
+      
+      default return <span>{reinfoview:link-html-glossary($participant/string())}</span>
+};
+
+(:~
 : Generates differences visualization for the contex information panel for the activity's type
 : @param $changes differences to the previous version of the activity's context information 
 : @param $tasktype type of activity
@@ -198,7 +223,7 @@ declare function reinfoview:diff-taskType($changes, $tasktype) {
 };
 
 (:~
-: Generates differences visualization for the contex information panel for the activity's input data objects
+: Generates differences visualization for the contex information panel for an input data object
 : @param $changes differences to the previous version of the activity's context information 
 : @param $doInput name of data object
 : @return visialization of activity input data object differnces (XHTML)
@@ -206,6 +231,7 @@ declare function reinfoview:diff-taskType($changes, $tasktype) {
 declare function reinfoview:diff-doInputs($changes, $doInput) {
   
   let $relevant-changes := $changes[@Type=("CHANGE:DO_INPUT_NAME","CHANGE:DO_INPUT") and @ReferenceId=$doInput/@Id]
+  let $relevant-state-changes := $changes[@Type=("CHANGE:DO_STATE") and @ReferenceId=$doInput/@Id]
   
   return
     switch($relevant-changes/@Operation)
@@ -217,11 +243,11 @@ declare function reinfoview:diff-doInputs($changes, $doInput) {
       
       case "insert" return <span style="color:green">{reinfoview:link-html-glossary($relevant-changes/@To/string())}</span>
       
-      default return <span>{reinfoview:link-html-glossary($doInput/string())}</span>
+      default return <span>{reinfoview:link-html-glossary($doInput/string())}</span> 
 };
 
 (:~
-: Generates differences visualization for the contex information panel for the activity's output data objects
+: Generates differences visualization for the contex information panel for an output data object
 : @param $changes differences to the previous version of the activity's context information 
 : @param $doOutput name of data object
 : @return visialization of activity output data object differnces (XHTML)
@@ -242,6 +268,29 @@ declare function reinfoview:diff-doOutputs($changes, $doOutput) {
       case "insert" return <span style="color:green">{reinfoview:link-html-glossary($relevant-changes/@To/string())}</span>
       
       default return <span>{reinfoview:link-html-glossary($doOutput/string())}</span>
+};
+
+(:~
+: Generates differences visualization for the contex information panel for a data object's state
+: @param $changes differences to the previous version of the activity's context information 
+: @param $do name of data object
+: @return visialization of activity input data object state differnces (XHTML)
+:)
+declare function reinfoview:diff-doState($changes, $do) {
+  
+  let $relevant-state-changes := $changes[@Type=("CHANGE:DO_STATE") and @ReferenceId=$do/@Id]
+  
+  return      
+    switch($relevant-state-changes/@Operation)
+      case "update" return    <span><span style="text-decoration: line-through;color:red">[{$relevant-state-changes/@From/string()}]</span>
+                              <span style="color:green">[{reinfoview:link-html-glossary($relevant-state-changes/@To/string())}]</span></span>
+                            
+                            
+      case "delete" return <span style="color:red;text-decoration: line-through">[{$relevant-state-changes/@From/string()}]</span>
+      
+      case "insert" return <span style="color:green">[{reinfoview:link-html-glossary($relevant-state-changes/@To/string())}]</span>
+      
+      default return if ($do/@State/string()="") then () else <span>[{reinfoview:link-html-glossary($do/@State/string())}]</span>
 };
 
 (:~
