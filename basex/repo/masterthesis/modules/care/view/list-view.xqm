@@ -87,7 +87,7 @@ declare function view:requirements-list-item($current-package, $compare-package,
  : @param $tmp Inhalt des Satzbausteins
  : @return HTML-Tooltip für die Anzeige der Inkonsistenzen
 :)
-declare function view:validation-tooltip($inconsistencies,$types, $tmp) {
+declare function view:validation-tooltip($inconsistencies, $types, $tmp) {
   let $relevant-changes := $inconsistencies[@Type=$types]
   return
   if($relevant-changes and $relevant-changes/@From/string()=$tmp) then

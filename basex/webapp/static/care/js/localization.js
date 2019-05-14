@@ -103,9 +103,32 @@ i18next.init({
         name: 'Name',
         activitytype: 'Activität-Typ',
         role: 'Rolle',
-        doc: 'Dokumente',
+        doc: 'Datenobjekte',
         pre: 'Vorgänger',
-        sys: 'Systeme'
+        sys: 'Datenspeicher',
+        system: 'System'
+      },
+      diff: {
+        act: 'Die Aktivität ',
+        del: ' wurde entfernt.',
+        add: ' wurde hinzugefügt.',
+        elicit: ' Erheben Sie neue Anforderungen!',
+        actname: 'Der Name der Aktivität',
+        changefrom: ' hat sich von ',
+        to: ' nach ',
+        changeto: ' geändert.',
+        resp: 'Die Zuständigkeit der Aktivität',
+        acttype: 'Der Typ der Aktivität',
+        doc: 'Das Datenobjekt ',
+        ds: 'Der Datenspeicher',
+        pre: 'Der Vorgänger ',
+        changeinto: ' hat sich in ',
+        docstate: 'Der Zustand des Datenobjekts ',
+        prename: 'Der Name des Vorgängers ',
+        pretype: 'Der Typ des Vorgängers ',
+        preresp: 'Die Zuständigkeit (Rolle) des Vorgängers ',
+        pretrans: 'Der Wert der Transition des Vorgängers ',
+        perf: 'Der beteiligte Akteur (Poolname) der Aktivität'
       },
        brand: 'CARE' //BeeP&#0178;R
       }
@@ -199,9 +222,32 @@ i18next.init({
         name: 'Name',
         activitytype: 'Activity Type',
         role: 'Role',
-        doc: 'Documents',
+        doc: 'Data Objects',
         pre: 'Predecessor',
-        sys: 'Systems'
+        sys: 'Data Stores',
+        system: 'System'
+      },
+      diff: {
+        act: 'The activity ',
+        del: ' has been deleted.',
+        add: ' has been added.',
+        elicit: ' Elicit new requirements!',
+        actname: 'The activity´s name',
+        changefrom: ' changed from',
+        to: ' to ',
+        changeto: '.',
+        resp: 'The activity´s performer',
+        acttype: 'The activity´s type',
+        doc: 'The data object ',
+        ds: 'The data store ',
+        pre: 'The predecessor ',
+        changeinto: ' has changed to ',
+        docstate: 'The data object´s state ',
+        prename: 'The predecessor´s name ',
+        pretype: 'The type of the predecessor ',
+        preresp: 'The performer of the predecessor ',
+        pretrans: 'The transition value of the predecessor ',
+        perf: 'The activity´s performer (pool name)'
       },
       brand: 'CARE' //BeeP&#0178;R
 		}

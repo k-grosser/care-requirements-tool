@@ -1,7 +1,19 @@
 (:~
- : Dieses Modul enthält die Funktionen, welche die Ansicht der Dokumentation eines XQuery-Moduls erzeugt. 
+ : Generates code documentation view 
  : @author Florian Eckey, Katharina Großer
- : @version 1.1
+ : @version 1.2
+ : @license Copyright (C) 2015-2019
+ :  This program is free software: you can redistribute it and/or modify
+ :  it under the terms of the GNU General Public License as published by
+ :  the Free Software Foundation, version 3 of the License.
+ :
+ :  This program is distributed in the hope that it will be useful,
+ :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ :  GNU General Public License for more details.
+ :
+ :  You should have received a copy of the GNU General Public License
+ :  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  :)
 module namespace page = 'masterthesis/modules/inspection/inspection';
 
@@ -22,7 +34,8 @@ declare %restxq:path("inspection/{$lng}")
   function page:import($lng) {
     ui:page($lng,(
       <div class="col-md-8">{page:module-list($lng)}</div>,
-      <div class="col-md-4"><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/inspection/modules/generate" data-i18n="[title]docu.graphtitle;docu.graph"></a></div>)
+      <div class="col-md-4" style="clear:both;"><a class="btn btn-cm bpm-btn" href="{$ui:prefix}/inspection/modules/generate" data-i18n="[title]docu.graphtitle;docu.graph"></a></div>
+    )
 )};
 
 (:~

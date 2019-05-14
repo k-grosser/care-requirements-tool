@@ -205,7 +205,7 @@ declare function page:function-inner($function) {
     </ul>
     {if(not($function/xd:annotations/xd:annotation[@name='updating']) or not($return=())) then <ul class="list-unstyled float col-md-11">
       <h5 data-i18n="docu.ret"></h5>
-      {if($return) then (<span>{$return}</span>,<span>, Typ: {$return-type}</span>) else <div style="color:red"  data-i18n="docu.noret"></div>}
+      {if($return) then (<span>{$return}</span>,<span>, <span data-i18n="docu.type"></span>: {$return-type}</span>) else <div style="color:red"  data-i18n="docu.noret"></div>}
     </ul> else ()}
     
     {if($parameters) then <div id="parameters-list" class="float col-md-11"> 
