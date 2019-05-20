@@ -130,6 +130,11 @@ i18next.init({
         pretrans: 'Der Wert der Transition des Vorgängers ',
         perf: 'Der beteiligte Akteur (Poolname) der Aktivität'
       },
+      reqlist: {
+        noreqs: 'noch keine Anforderungen erhoben',
+        edit: 'Anforderung bearbeiten',
+        del: 'Anforderung löschen'
+      },
        brand: 'CARE' //BeeP&#0178;R
       }
     },
@@ -248,6 +253,11 @@ i18next.init({
         preresp: 'The performer of the predecessor ',
         pretrans: 'The transition value of the predecessor ',
         perf: 'The activity´s performer (pool name)'
+      },
+      reqlist: {
+        noreqs: 'no requirements elicited, yet',
+        edit: 'edit requirement',
+        del: 'delete requirement'
       },
       brand: 'CARE' //BeeP&#0178;R
 		}
