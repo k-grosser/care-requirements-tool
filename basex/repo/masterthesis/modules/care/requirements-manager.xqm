@@ -1,7 +1,19 @@
 (:~ 
- : Diese Modul stellt alle Funktionen bereit, welche das CARE-Datenformat verarbeiten.
- : @author   Florian Eckey
- : @version 1.1
+ : CARE dataformat management functions
+ : @author   Florian Eckey, Katharina Großer
+ : @version 2.0
+ : @license Copyright (C) 2015-2019
+ :  This program is free software: you can redistribute it and/or modify
+ :  it under the terms of the GNU General Public License as published by
+ :  the Free Software Foundation, version 3 of the License.
+ :
+ :  This program is distributed in the hope that it will be useful,
+ :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ :  GNU General Public License for more details.
+ :
+ :  You should have received a copy of the GNU General Public License
+ :  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  :)
 module namespace re ="masterthesis/modules/care/requirements-manager";
 
@@ -10,51 +22,59 @@ import module namespace cm ="masterthesis/modules/care-manager";
 declare namespace c ="care";
 
 (:~
- : Diese Funktion generiert das XML Element einer Bedingung nach dem LogikMaster
- : @param $comparison-item Vergleichobjekt-Baustein der Bedingung
- : @param $condition-comparisonOperator Vergleichsoperator der Bedingung
- : @param $value Wert-Baustein der Bedingung
- : @param $logicexpression Logischer Ausdruck - Alternativ zur Prozessbeschreibung
- : @return XML der Bedingung
+ : Generates logical condition subclause element
+ : @param $comparison-item subject the value is defined for
+ : @param $condition-comparisonOperator relational operator
+ : @param $value value to compare the subject with
+ : @param $logicexpression logical expression, alternative to the operator expressions
+ : @param $lng language the requirement is phrased in
+ : @return condition subclause (XML)
 :)
-declare function re:new-condition-logic($comparison-item, $condition-comparisonOperator, $value, $logicexpression) {
-  if ($logicexpression = '') then
-  <Condition Type="logic">
-    <Conjunction>Falls</Conjunction>
-    <ComparisonItem>{$comparison-item}</ComparisonItem>
-    <ComparisonOperator>{$condition-comparisonOperator}</ComparisonOperator>
-    <Value>{$value}</Value>
-    <Verb>ist</Verb>
-  </Condition> 
- else
- <Condition Type="logic">
-    <Conjunction>Falls</Conjunction>
-    <Expression>{$logicexpression}</Expression>
-  </Condition>
+declare function re:new-condition-logic($comparison-item, $condition-comparisonOperator, $value, $logicexpression, $lng) {
+  
+  let $conjunc := if ($lng = "de" || "DE") then "Falls" else "If"
+  
+  return
+    <Condition Type="logic">
+      <Conjunction>{$conjunc}</Conjunction>
+      {if ($logicexpression = '') then
+        (<ComparisonItem>{$comparison-item}</ComparisonItem>,
+         <ComparisonOperator>{$condition-comparisonOperator}</ComparisonOperator>,
+         <Value>{$value}</Value>,
+         <Verb>ist</Verb>)
+       else
+         <Expression>{$logicexpression}</Expression>
+      } 
+    </Condition>
 };
 
 (:~
- : Diese Funktion generiert das XML Element einer Bedingung nach dem EreignisMaster
- : @param $event Ereignis-Baustein
- : @param $event-actor Akteur-Baustein für detaillierte Events
- : @param $event-object Objekt-Baustein für detaillierte Events
+ : Generates event triggered condition subclause
+ : @param $event event object, alternative to detailed event description
+ : @param $event-actor actor of event description
+ : @param $event-object object of event description
+ : @param $lng language the requirement is phrased in
  : @return XML der Bedingung
 :)
-declare function re:new-condition-event($event, $event-actor, $event-object) {
-  if ($event = '') then
-  <Condition Type="event">
-    <Conjunction>Sobald</Conjunction>
-    <SubjectDescription>das Ereignis</SubjectDescription>
-    <Subject>{$event}</Subject>
-    <Verb>eintritt</Verb>
-  </Condition>
-  else
-  <Condition Type="event">
-    <Conjunction>Sobald</Conjunction>
-    <Subject>{$event-actor}</Subject>
-    <Verb>eintritt</Verb>
-    <Object>{$event-object}</Object>
-  </Condition>
+declare function re:new-condition-event($event, $event-actor, $event-object, $lng) {
+  
+  let $conjunc := if ($lng = "de" || "DE") then "Sobald" else "As soon as"
+  
+  return
+    <Condition Type="event">
+      <Conjunction>{$conjunc}</Conjunction>
+        {if ($event = '') then
+         (<SubjectDescription>das Ereignis</SubjectDescription>,
+          <Subject>{$event}</Subject>,
+          <Verb>eintritt</Verb>)
+         else
+          (<Condition Type="event">,
+            <Conjunction>Sobald</Conjunction>,
+            <Subject>{$event-actor}</Subject>,
+            <Verb>eintritt</Verb>,
+            <Object>{$event-object}</Object>)
+     }
+    </Condition>
 };
 
 (:~
