@@ -178,8 +178,8 @@ declare %restxq:path("restancil/save/{$pkg-id}/{$pkg-version-id}/{$ref-id}/{$lng
         updating function page:save-requirement($pkg-id, $pkg-version-id, $ref-id, $req-id, $template-type, $condition-type, $condition-comparisonItem, $condition-comparisonOperator, $condition-value, $condition-event, $event-actor, $event-object, $event-function, $event-verb, $logicexpression, $system, $liability, $actor, $functionality, $object-detail1, $object, $object-detail2, $processverb-detail, $processverb, $category, $lng) {
           
           let $condition := switch($condition-type)
-                             case "event" return re:new-condition-event($condition-event, $event-actor, $event-object)
-                             case "logic" return re:new-condition-logic($condition-comparisonItem, $condition-comparisonOperator, $condition-value, $logicexpression)
+                             case "event" return re:new-condition-event($condition-event, $event-actor, $event-object, $lng)
+                             case "logic" return re:new-condition-logic($condition-comparisonItem, $condition-comparisonOperator, $condition-value, $logicexpression, $lng)
                              case "timespan" return re:new-condition-timespan($logicexpression)
                              default return ()
                              

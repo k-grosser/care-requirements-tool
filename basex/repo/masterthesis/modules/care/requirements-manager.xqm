@@ -21,72 +21,6 @@ import module namespace cm ="masterthesis/modules/care-manager";
 
 declare namespace c ="care";
 
-(:~
- : Generates logical condition subclause element
- : @param $comparison-item subject the value is defined for
- : @param $condition-comparisonOperator relational operator
- : @param $value value to compare the subject with
- : @param $logicexpression logical expression, alternative to the operator expressions
- : @param $lng language the requirement is phrased in
- : @return condition subclause (XML)
-:)
-declare function re:new-condition-logic($comparison-item, $condition-comparisonOperator, $value, $logicexpression, $lng) {
-  
-  let $conjunc := if ($lng = "de" || "DE") then "Falls" else "If"
-  
-  return
-    <Condition Type="logic">
-      <Conjunction>{$conjunc}</Conjunction>
-      {if ($logicexpression = '') then
-        (<ComparisonItem>{$comparison-item}</ComparisonItem>,
-         <ComparisonOperator>{$condition-comparisonOperator}</ComparisonOperator>,
-         <Value>{$value}</Value>,
-         <Verb>ist</Verb>)
-       else
-         <Expression>{$logicexpression}</Expression>
-      } 
-    </Condition>
-};
-
-(:~
- : Generates event triggered condition subclause
- : @param $event event object, alternative to detailed event description
- : @param $event-actor actor of event description
- : @param $event-object object of event description
- : @param $lng language the requirement is phrased in
- : @return XML der Bedingung
-:)
-declare function re:new-condition-event($event, $event-actor, $event-object, $lng) {
-  
-  let $conjunc := if ($lng = "de" || "DE") then "Sobald" else "As soon as"
-  
-  return
-    <Condition Type="event">
-      <Conjunction>{$conjunc}</Conjunction>
-        {if ($event = '') then
-         (<SubjectDescription>das Ereignis</SubjectDescription>,
-          <Subject>{$event}</Subject>,
-          <Verb>eintritt</Verb>)
-         else
-          (<Condition Type="event">,
-            <Conjunction>Sobald</Conjunction>,
-            <Subject>{$event-actor}</Subject>,
-            <Verb>eintritt</Verb>,
-            <Object>{$event-object}</Object>)
-     }
-    </Condition>
-};
-
-(:~
- : Diese Funktion generiert das XML Element einer Bedingung nach dem ZeitraumMaster
- : @param $logicexpression Logische Aussage (Schleifenbedingung)
- : @return XML der Bedingung
-:)
-declare function re:new-condition-timespan($logicexpression) {
-  <Condition Type="timespan">
-    <Conjunction>Solange</Conjunction>
-  </Condition>
-};
 
 (:~
  : Diese Funktion generiert das XML Element einer Anforderung nach SOPHIST Schablone durch Aufruf der überladenen Funktion mit automatisch generierter ID
@@ -109,7 +43,7 @@ declare function re:new-condition-timespan($logicexpression) {
 :)
 declare function re:new-requirement($pkg-id, $pkg-version-id, $ref-id, $template-type, $condition, $system, $liability, $actor, $functionality,$object-detail1, $object,$object-detail2,$processverb-detail, $processverb, $category) {
   
-  let $new-requirement := re:new-requirement(random:uuid(),(),$pkg-id, $pkg-version-id, $ref-id, $template-type, $condition, $system, $liability, $actor, $functionality, $object-detail1,$object,$object-detail2,$processverb-detail, $processverb, $category)
+  let $new-requirement := re:new-requirement(random:uuid(), (), $pkg-id, $pkg-version-id, $ref-id, $template-type, $condition, $system, $liability, $actor, $functionality, $object-detail1,$object,$object-detail2,$processverb-detail, $processverb, $category)
   
   return $new-requirement
 };
@@ -135,7 +69,7 @@ declare function re:new-requirement($pkg-id, $pkg-version-id, $ref-id, $template
  : @param $category Kategorie der Anforderung
  : @return XML der Anforderung
 :)
-declare function re:new-requirement($id, $nr , $pkg-id, $pkg-version-id, $ref-id, $template-type, $condition, $system, $liability, $actor, $functionality,$object-detail1, $object,$object-detail2,$processverb-detail, $processverb, $category) {
+declare function re:new-requirement($id, $nr, $pkg-id, $pkg-version-id, $ref-id, $template-type, $condition, $system, $liability, $actor, $functionality,$object-detail1, $object,$object-detail2,$processverb-detail, $processverb, $category) {
   let $activity := cm:get($pkg-id,$pkg-version-id)/c:Activity[@Id=$ref-id]
   let $numbers := $activity/c:Requirements/c:Requirement/@Number
   let $number := if($numbers) then max($numbers) else 1 return
@@ -207,4 +141,73 @@ declare updating function re:save($pkg-id,$pkg-version,$ref-id,$req-id,$template
            ,replace value of node $existing-requirement/c:ProcessVerbDetail with $processverb-detail
            ,replace value of node $existing-requirement/c:ProcessVerb with $processverb)
       else insert node $requirement into $package/c:Activity[@Id=$ref-id]/c:Requirements
+};
+
+(:~
+ : Generates event triggered condition subclause
+ : @param $event event object, alternative to detailed event description
+ : @param $event-actor actor of event description
+ : @param $event-object object of event description
+ : @param $lng language the requirement is phrased in
+ : @return condition clause XML
+:)
+declare function re:new-condition-event($event, $event-actor, $event-object, $lng) {
+  
+  let $conjunc := if ($lng = "de" || "DE") then "Sobald" else "As soon as"
+  
+  return (
+    <Condition Type="event">
+      <Conjunction>{$conjunc}</Conjunction>,
+        {if ($event = '') then
+         (
+           <Subject>{$event-actor}</Subject>,
+           <Verb>eintritt</Verb>,
+           <Object>{$event-object}</Object>
+         )
+         else
+         (
+           <SubjectDescription>das Ereignis</SubjectDescription>,
+           <Subject>{$event}</Subject>,
+           <Verb>eintritt</Verb>
+       )},
+      </Condition>
+  )
+};
+
+(:~
+ : Generates logical condition subclause element
+ : @param $comparison-item subject the value is defined for
+ : @param $condition-comparisonOperator relational operator
+ : @param $value value to compare the subject with
+ : @param $logicexpression logical expression, alternative to the operator expressions
+ : @param $lng language the requirement is phrased in
+ : @return condition subclause (XML)
+:)
+declare function re:new-condition-logic($comparison-item, $condition-comparisonOperator, $value, $logicexpression, $lng) {
+  
+  let $conjunc := if ($lng = "de" || "DE") then "Falls" else "If"
+  
+  return
+    <Condition Type="logic">
+      <Conjunction>{$conjunc}</Conjunction>
+      {if ($logicexpression = '') then
+        (<ComparisonItem>{$comparison-item}</ComparisonItem>,
+         <ComparisonOperator>{$condition-comparisonOperator}</ComparisonOperator>,
+         <Value>{$value}</Value>,
+         <Verb>ist</Verb>)
+       else
+         <Expression>{$logicexpression}</Expression>
+      } 
+    </Condition>
+};
+
+(:~
+ : Diese Funktion generiert das XML Element einer Bedingung nach dem ZeitraumMaster
+ : @param $logicexpression Logische Aussage (Schleifenbedingung)
+ : @return XML der Bedingung
+:)
+declare function re:new-condition-timespan($logicexpression) {
+  <Condition Type="timespan">
+    <Conjunction>Solange</Conjunction>
+  </Condition>
 };
