@@ -1,25 +1,37 @@
 (:~
- : Diese Modul generiert die Start-Seite der Webanwendung.
- : @version 1.2
+ : Startpage
+ : @version 1.3
  : @author Florian Eckey, Katharina Großer
- :)
+ : @license Copyright (C) 2015-2019
+ :  This program is free software: you can redistribute it and/or modify
+ :  it under the terms of the GNU General Public License as published by
+ :  the Free Software Foundation, version 3 of the License.
+ :
+ :  This program is distributed in the hope that it will be useful,
+ :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ :  GNU General Public License for more details.
+ :
+ :  You should have received a copy of the GNU General Public License
+ :  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+:)
 module namespace page = 'masterthesis/modules/web-page';
 
 import module namespace ui = 'masterthesis/modules/ui-manager';
 
 (:~
- : Diese Funktion erzeugt den HTML-Inhalt der Startseite. Der Inhalt wird in das UI-Template eingebunden.
- : @return Startseite (XHTML)
+ : Redirects generic http request to default English start page
+ : @return redirect to English startpage
  :)
 declare
   %rest:path("care-webapp")
   updating function page:redirectstart() {
-    db:output(<restxq:redirect>/care/en</restxq:redirect>)
+    db:output(<restxq:redirect>/care-webapp/en</restxq:redirect>)
 };
 
 (:~
- : Diese Funktion erzeugt den HTML-Inhalt der Startseite. Der Inhalt wird in das UI-Template eingebunden.
- : @return Startseite (XHTML)
+ : Calls function to generate start page with language attribute
+ : @return call of start page generator
  :)
 declare
   %rest:path("care-webapp/{$lng}")
@@ -33,8 +45,8 @@ declare
 };
 
 (:~
- : Diese Funktion erzeugt den HTML-Inhalt der Startseite. Der Inhalt wird in das UI-Template eingebunden.
- : @return Startseite (XHTML)
+ : Generates (X)HTML content of start page
+ : @return start page (X)HTML
  :)
 declare
   %rest:path("care/{$lng}")
@@ -70,27 +82,27 @@ declare
 };
 
 (:~
- : Diese Funktion stellt den REST-Aufrufe für die initiale Erstellung der Datenbanken dar
- : @return Redirekt auf die Startseite
+ : REST call to initalize database
+ : @return redirect to start page
  :)
 declare
   %rest:path("setup/{$lng}")
   updating function page:setup($lng) {
-    db:create("care-packages")
-    ,db:create("inspection",<Inspections xmlns="inspections"/>,"inspections.xml")
-    ,db:create("glossary",<Glossary xmlns="glossary"/>,"glossary.xml")
-    ,db:output(<restxq:redirect>/care/{$lng}</restxq:redirect>)
+    db:create("care-packages"),
+    db:create("inspection",<Inspections xmlns="inspections"/>,"inspections.xml"),
+    db:create("glossary",<Glossary xmlns="glossary"/>,"glossary.xml"),
+    db:output(<restxq:redirect>/care/{$lng}</restxq:redirect>)
   };
 
 (:~
- : Diese Funktione stellt den REST-Aufrufe für das Löschen der Datenbanken dar
- : @return Redirekt auf die Startseite
+ : REST call to delete database
+ : @return redirect to start page
  :)
 declare
   %rest:path("setup/drop/{$lng}")
   updating function page:setup-drop($lng) {
-    db:drop("care-packages")
-    ,db:drop("inspectiosn")
-    ,db:drop("glossary")
-    ,db:output(<restxq:redirect>/care/{$lng}</restxq:redirect>)
+    db:drop("care-packages"),
+    db:drop("inspectiosn"),
+    db:drop("glossary"),
+    db:output(<restxq:redirect>/care/{$lng}</restxq:redirect>)
   };
