@@ -13,13 +13,8 @@ import module namespace ui = 'masterthesis/modules/ui-manager';
  :)
 declare
   %rest:path("care-webapp")
-  %output:method("xhtml")
-  %output:omit-xml-declaration("no")
-  %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
-  %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
-  function page:care()
-  as element(Q{http://www.w3.org/1999/xhtml}html) {
-    page:start("de")
+  updating function page:redirectstart() {
+    db:output(<restxq:redirect>/care/en</restxq:redirect>)
 };
 
 (:~
