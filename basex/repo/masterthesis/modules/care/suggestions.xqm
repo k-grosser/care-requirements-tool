@@ -323,10 +323,10 @@ declare function rsugg:possible-stateobjects($care-pkg, $act) {
 };
 
 (:~
- : Diese Funktion generiert die Vorschläge für die Präzisierung 1 des Objekts der Schablone
- : @param $care-pkg Paket
- : @param $reference Aktivität
- : @return Vorschläge als XML
+ : Generates suggestions for the prefix object details
+ : @param $care-pkg package
+ : @param $reference activity
+ : @return object prefix suggestions (XML)
 :)
 declare function rsugg:possible-objectdetails1($care-pkg,$reference) {
   let $state-objectdetails1 := rsugg:possible-states($reference)
@@ -336,10 +336,10 @@ declare function rsugg:possible-objectdetails1($care-pkg,$reference) {
 };
 
 (:~
- : Diese Funktion generiert die Vorschläge für die Präzisierung 2 des Objekts der Schablone
- : @param $care-pkg Paket
- : @param $reference Aktivität
- : @return Vorschläge als XML
+ : Generates suggestions for the postfix object details
+ : @param $care-pkg package
+ : @param $reference activity
+ : @return object postfix suggestions (XML)
 :)
 declare function rsugg:possible-objectdetails2($care-pkg,$reference) {
   let $other-objectdetails2 := for $objectdetail2 in distinct-values($care-pkg//c:ObjectDetail2/string()) return <entry Id="{random:uuid()}" Name="{$objectdetail2}" Type="Re ReObjectDetail2 ReFavorite" Icon="glyphicon glyphicon-star"/>
