@@ -135,6 +135,16 @@ i18next.init({
         edit: 'Anforderung bearbeiten',
         del: 'Anforderung löschen'
       },
+	  bpmn: {
+		  usertask: 'Benutzeraktivität',
+		  servicetask: 'Systemaktivität',
+		  receivetask: 'Empfangende Aktivität',
+		  sendtask: 'Sendende Aktivität',
+		  scripttask: 'Skript Aktivität',
+		  manualtask: 'Manuelle Aktivität',
+		  businessruletask: 'Aktivität mit Geschäftsentscheidung',
+		  untypedtask: 'Aktivität (ohne Typ)'
+	  },
        brand: 'CARE' //BeeP&#0178;R
       }
     },
@@ -259,6 +269,16 @@ i18next.init({
         edit: 'edit requirement',
         del: 'delete requirement'
       },
+	  bpmn: {
+		  usertask: 'User Task',
+		  servicetask: 'Service Task',
+		  receivetask: 'Receiving Task',
+		  sendtask: 'Sending Task',
+		  scripttask: 'Script Task',
+		  manualtask: 'Manual Task',
+		  businessruletask: 'Business Rule Task',
+		  untypedtask: '(untyped) Activity'
+	  },
       brand: 'CARE' //BeeP&#0178;R
 		}
 	}

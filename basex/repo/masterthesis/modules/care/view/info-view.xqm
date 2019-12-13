@@ -212,14 +212,14 @@ declare function reinfoview:diff-taskType($changes, $tasktype) {
   
   return
     switch($relevant-changes/@Operation)
-      case "update" return (<span style="text-decoration: line-through;color:red">{$relevant-changes/@From/string()}</span>,
-                            <span style="color:green">{reinfoview:link-html-glossary($relevant-changes/@To/string())}</span>)
+      case "update" return (<span style="font-style: italic; text-decoration: line-through; color:red" data-i18n="bpmn.{$relevant-changes/@From/string()}"></span>,
+                            <span style="font-style: italic; color:green" data-i18n="bpmn.{$relevant-changes/@From/string()}"></span>)
                             
-      case "delete" return <span style="color:red;text-decoration: line-through">{$relevant-changes/@From/string()}</span>
+      case "delete" return <span style="font-style: italic; color:red;text-decoration: line-through" data-i18n="bpmn.{$relevant-changes/@From/string()}"></span>
       
-      case "insert" return <span style="color:green">{reinfoview:link-html-glossary($relevant-changes/@To/string())}</span>
+      case "insert" return <span style="font-style: italic; color:green" data-i18n="bpmn.{$relevant-changes/@From/string()}"></span>
       
-      default return <span>{reinfoview:link-html-glossary($tasktype/string())}</span>
+      default return <span style="font-style: italic;" data-i18n="bpmn.{$tasktype/string()}"></span>
 };
 
 (:~
@@ -374,7 +374,7 @@ declare function reinfoview:diff-predecessors($changes, $predecessor) {
 declare function reinfoview:info-element($key, $value) {
   let $random-id := random:uuid()
   return
-    if($value and $value!="") then
+    if($value) then (: and $value!="":)
       <dl class="dl-horizontal">
         <dt data-i18n="{$key}"></dt>
         <dd>{$value}</dd>

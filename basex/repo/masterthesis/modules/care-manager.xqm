@@ -227,20 +227,20 @@ declare function cm:get() {
 };
 
 (:~
- : Diese Funktion übersetzt den Typ einer Aktivität (XPDL)
- : @param $type Typ der Aktivität
- : @return deutscher Name für den Typ der Aktivität
+ : Translates XPDL task types to BPMN task types
+ : @param $type XPDL task type
+ : @return BPMN (like) task type name ('usertask', 'servicetask', 'receivetask', 'sendtask', 'scriptask', 'manualtask', 'businessruletask', or 'untypedtask')
 :)
 declare function cm:get-tasktype-name($type) {
   switch($type)
-    case "TaskUser" return "Benutzeraktivität"
-    case "TaskService" return "Systemaktivität"
-    case "TaskReceive" return "Empfangende Aktivität"
-    case "TaskSend" return "Sendende Aktivität"
-    case "TaskScript" return "Skript Aktivität"
-    case "TaskManual" return "Manuelle Aktivität"
-    case "TaskBusinessRule" return "Aktivität mit Geschäftsentscheidung"
-    case "None" return "Aktivität"
+    case "TaskUser" return "usertask"
+    case "TaskService" return "servicetask"
+    case "TaskReceive" return "receivetask"
+    case "TaskSend" return "sendtask"
+    case "TaskScript" return "scripttask"
+    case "TaskManual" return "manualtask"
+    case "TaskBusinessRule" return "businessruletask"
+    case "None" return "untypedtask"
     default return ()
 };
 

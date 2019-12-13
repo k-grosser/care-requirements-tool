@@ -163,11 +163,11 @@ declare function view:stancil-form($current-package,$compare-package, $ref-id, $
               
           {ui:autocomplete-search-bar(
                   rsugg:possible-actors($care-ref)
-                  ,<input type="text" id="actor" name="actor" tabindex="4" placeholder="{if($care-ref/c:ContextInformation/c:TaskType=('Benutzeraktivität')) then '&#60;Akteur&#62;' else '(kein Akteur)'}" class="re-tooltip re-input re-actor {if($care-ref/c:ContextInformation/c:TaskType=('Benutzeraktivität')) then ' re-main' else ''}" style="width:15%;min-width:200px; {if($care-ref/c:ContextInformation/c:TaskType=('Benutzeraktivität')) then '' else 'display:none;'}" data-content="{view:info-tooltip('actor')}" rel="tooltip" data-html="true" data-placement="top" value="{if($requirement) then $requirement/c:Actor/string() else rsugg:possible-actors($care-ref)[1]/@Name}"/>)}
+                  ,<input type="text" id="actor" name="actor" tabindex="4" placeholder="{if($care-ref/c:ContextInformation/c:TaskType=('usertask')) then '&#60;Akteur&#62;' else '(kein Akteur)'}" class="re-tooltip re-input re-actor {if($care-ref/c:ContextInformation/c:TaskType=('usertask')) then ' re-main' else ''}" style="width:15%;min-width:200px; {if($care-ref/c:ContextInformation/c:TaskType=('usertask')) then '' else 'display:none;'}" data-content="{view:info-tooltip('actor')}" rel="tooltip" data-html="true" data-placement="top" value="{if($requirement) then $requirement/c:Actor/string() else rsugg:possible-actors($care-ref)[1]/@Name}"/>)}
           
           {ui:autocomplete-search-bar( 
                   rsugg:possible-functionalities($care-ref)
-                  ,<input type="text" id="functionality" name="functionality" tabindex="5" placeholder="{if($care-ref/c:ContextInformation/c:TaskType=('Systemaktivität')) then '(autonome Systemaktivität)' else '&#60;Art der Funktionalität&#62;'}" class="re-tooltip re-input {if($care-ref/c:ContextInformation/c:TaskType=('Systemaktivität')) then '' else ' re-main'}" style="width:15%;min-width:250px" data-content="{view:info-tooltip('functionality')}" rel="tooltip" data-html="true" data-placement="top" value="{if($requirement) then $requirement/c:Functionality/string() else rsugg:possible-functionalities($care-ref)[1]/@Name}" onfocus="if($.trim($('#functionality').val())=='die Möglichkeit bieten')$('#actor').show().focus().val('{rsugg:possible-actors($care-ref)[2]/@Name}');else $('#actor').hide().focus().val('');"/>)}
+                  ,<input type="text" id="functionality" name="functionality" tabindex="5" placeholder="{if($care-ref/c:ContextInformation/c:TaskType=('servicetask')) then '(autonome Systemaktivität)' else '&#60;Art der Funktionalität&#62;'}" class="re-tooltip re-input {if($care-ref/c:ContextInformation/c:TaskType=('servicetask')) then '' else ' re-main'}" style="width:15%;min-width:250px" data-content="{view:info-tooltip('functionality')}" rel="tooltip" data-html="true" data-placement="top" value="{if($requirement) then $requirement/c:Functionality/string() else rsugg:possible-functionalities($care-ref)[1]/@Name}" onfocus="if($.trim($('#functionality').val())=='die Möglichkeit bieten')$('#actor').show().focus().val('{rsugg:possible-actors($care-ref)[2]/@Name}');else $('#actor').hide().focus().val('');"/>)}
           
           {ui:autocomplete-search-bar(
                   rsugg:possible-objectdetails1($current-package,$care-ref)
@@ -230,7 +230,7 @@ declare function view:info-tooltip($element as xs:string) {
         
       case "liability" return <div>Tragen Sie eine Verbindlichkeit der Anforderung ein. Wie wichtig ist diese für das Zielsystem?</div>   
       
-      case "actor" return <div>Falls es sich um eine Benutzeraktivität handelt (&quot;die Möglichkeit bieten&quot;), tragen Sie einen zuständigen Akteur für die Anforderung ein. Dieser lässt sich aus der Rolle der Aktivität herleiten.</div>  
+      case "actor" return <div>Falls es sich um eine usertask handelt (&quot;die Möglichkeit bieten&quot;), tragen Sie einen zuständigen Akteur für die Anforderung ein. Dieser lässt sich aus der Rolle der Aktivität herleiten.</div>  
       
       case "functionality" return <div>Tragen Sie eine Funktionalität. Wird vom System eine Aktion automatisch ausgeführt (leer lassen) oder agiert ein Akteur (&quot;die Möglichkeit bieten&quot;)? Dies lässt sich aus dem Typ der Aktivität herleiten.</div> 
       

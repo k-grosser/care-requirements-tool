@@ -81,9 +81,9 @@ declare function rsugg:possible-eventactors($care-pkg, $act) {
   let $pre := $care-pkg/c:Activity[@Id=$act/c:ContextInformation/c:Predecessors/c:Predecessor/@Id/string()]
   
   return
-    if ($pre/c:ContextInformation/c:TaskType=("Benutzeraktivität")) then rsugg:possible-actors($pre) 
+    if ($pre/c:ContextInformation/c:TaskType=("usertask")) then rsugg:possible-actors($pre) 
     else
-      if ($pre/c:ContextInformation/c:TaskType=("Systemaktivität")) then rsugg:possible-systems($care-pkg,$pre) 
+      if ($pre/c:ContextInformation/c:TaskType=("servicetask")) then rsugg:possible-systems($care-pkg,$pre) 
       else 
         <entry Id="{random:uuid()}" Name="{$pre/c:ContextInformation/c:Performer/string()}" Type="Lane" Icon="glyphicon glyphicon-user"/>
         | <entry Id="{random:uuid()}" Name="{$pre/c:ContextInformation/c:Participant/string()}" Type="Lane" Icon="glyphicon glyphicon-cog"/>
@@ -151,7 +151,7 @@ declare function rsugg:possible-actors($act) {
   let $emptyEntry := <entry Id="{random:uuid()}" Name="" Type="Lane" Icon="glyphicon glyphicon-remove"/>
   let $laneEntry := <entry Id="{random:uuid()}" Name="{$act/c:ContextInformation/c:Performer/string()}" Type="Lane" Icon="glyphicon glyphicon-user"/>
   
-  return if ($act/c:ContextInformation/c:TaskType=("Benutzeraktivität")) then $laneEntry else $emptyEntry | $laneEntry
+  return if ($act/c:ContextInformation/c:TaskType=("usertask")) then $laneEntry else $emptyEntry | $laneEntry
 };
 
 (:~
@@ -161,7 +161,7 @@ declare function rsugg:possible-actors($act) {
  : @return system element suggestions (XML)
 :)
 declare function rsugg:possible-systems($care-pkg, $reference) {
-   if ($reference/c:ContextInformation/c:TaskType=("Systemaktivität")) then
+   if ($reference/c:ContextInformation/c:TaskType=("servicetask")) then
     let $laneEntry := <entry Id="{random:uuid()}" Name="{$reference/c:ContextInformation/c:Performer/string()}" Type="Lane" Icon="glyphicon glyphicon-user"/>
     let $pool-system := <entry Id="{random:uuid()}" Name="{$reference/c:ContextInformation/c:Participant/string()}" Type="Pool" Icon="glyphicon glyphicon-cog"/>
     let $other-systems := for $system in distinct-values($care-pkg//c:System) return <entry Id="{random:uuid()}" Name="{$system}" Type="Re ReSystem ReFavorite" Icon="glyphicon glyphicon-star"/>
@@ -234,25 +234,25 @@ declare function rsugg:possible-functionalities($act) {
   
   let $other-functionalities := 
   
-     if ($act/c:ContextInformation/c:TaskType=("Systemaktivität") or $act/c:ContextInformation/c:TaskType=("Sendende Aktivität")) then
+     if ($act/c:ContextInformation/c:TaskType=("servicetask") or $act/c:ContextInformation/c:TaskType=("sendtask")) then
   
   (<entry Id="{random:uuid()}" Name="" Type="Re ReFunctionality" Icon="glyphicon glyphicon-cog"/>,
  <entry Id="{random:uuid()}" Name="die Möglichkeit bieten" Type="Re ReFunctionality" Icon="glyphicon glyphicon-user"/>
                             ,<entry Id="{random:uuid()}" Name="fähig sein" Type="Re ReFunctionality" Icon="glyphicon glyphicon-link"/>)
                             
-     else if ($act/c:ContextInformation/c:TaskType=("Benutzeraktivität")) then
+     else if ($act/c:ContextInformation/c:TaskType=("usertask")) then
   
    (<entry Id="{random:uuid()}" Name="die Möglichkeit bieten" Type="Re ReFunctionality" Icon="glyphicon glyphicon-user"/>
                             ,<entry Id="{random:uuid()}" Name="fähig sein" Type="Re ReFunctionality" Icon="glyphicon glyphicon-link"/>
                             ,<entry Id="{random:uuid()}" Name="" Type="Re ReFunctionality" Icon="glyphicon glyphicon-cog"/>)
                             
-     else if ($act/c:ContextInformation/c:TaskType=("Skript Aktivität") or $act/c:ContextInformation/c:TaskType=("Aktivität mit Geschäftsentscheidung") or $act/c:ContextInformation/c:TaskType=("Empfangende Aktivität")) then
+     else if ($act/c:ContextInformation/c:TaskType=("scripttask") or $act/c:ContextInformation/c:TaskType=("businessruletask") or $act/c:ContextInformation/c:TaskType=("receivetask")) then
   
    (<entry Id="{random:uuid()}" Name="fähig sein" Type="Re ReFunctionality" Icon="glyphicon glyphicon-link"/>
                             ,<entry Id="{random:uuid()}" Name="die Möglichkeit bieten" Type="Re ReFunctionality" Icon="glyphicon glyphicon-user"/>
                             ,<entry Id="{random:uuid()}" Name="" Type="Re ReFunctionality" Icon="glyphicon glyphicon-cog"/>)
                             
-     else if ($act/c:ContextInformation/c:TaskType=("Manuelle Aktivität")) then
+     else if ($act/c:ContextInformation/c:TaskType=("manualtask")) then
   
    (<entry Id="{random:uuid()}" Name="" Type="Re ReFunctionality" Icon="glyphicon glyphicon-user"/>,
    <entry Id="{random:uuid()}" Name="fähig sein" Type="Re ReFunctionality" Icon="glyphicon glyphicon-link"/>
